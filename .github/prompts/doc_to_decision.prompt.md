@@ -53,7 +53,7 @@ Task tracking is valuable for:
    - Use-case specifications
    - Formalized requirement schemas (e.g., structured requirement templates)
 
-3. Make an explicit plan for which diagrams to produce in Mermaid, covering a detailed flowchart/activity, sequence, and state diagrams when they add value. For each, state:
+3. In addition to the representations chosen in Step -2, make an explicit plan for which diagrams to produce in Mermaid, covering a detailed flowchart/activity, sequence, and state diagrams when they add value. For each, state:
    - Purpose of the diagram
    - Scope (which flows or states to include)
    - Key actors/entities
@@ -67,18 +67,19 @@ Task tracking is valuable for:
 
 5. Document your findings and decisions in a clear, structured format that can be easily followed and understood by another AI agent or human reviewer (e.g., markdown with sections, tables, or structured text) and store it in a file using the #tool:edit tool at plan/<appropriate_filename>.md
 
-6. If possible provide metadata about model used and tokens consumed along with other relevant information about the execution at the end of the file.
+6. Provide metadata about model , date and time of execution.
 
 Output Format:
 - Section 1: Documentation Analysis Summary
 - Section 2: Evaluation of Possible Representations
 - Section 3: Selected Representation & Justification
 - Section 4: Mermaid Diagram Plan (flowchart/activity, sequence, state) with purpose, scope, actors, and rendering directive (e.g., `flowchart TD`)
+- Section 5: Metadata (model, date, time)
 
 Do not invent requirements. Base everything strictly on the given content.
 
 # When finished:
-- Provide the path to the file where the output is stored. 
-- Never output the analysis directly in the panel 
+- Provide the path to the file where the output is stored at the user interaction panel. 
+- Never output the analysis directly in the user interaction panel 
 - Ask the user to review the plan accordingly provide feedback or approval to improve the plan before proceeding to the next step.
 - Suggest using the decision-to-representation prompt to create the structured representation based on the decided representation.
