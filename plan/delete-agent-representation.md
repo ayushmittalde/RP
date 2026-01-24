@@ -1,399 +1,510 @@
-# Delete Agent Feature - Structured Intermediate Representation
+# Structured Representation Plan: Delete Agent Feature
 
 ## Section 1: Documentation Analysis Summary
 
 ### Feature Overview
-
-The Delete Agent feature allows users to remove unwanted agents from the AutoGPT Monitor with built-in safety measures to prevent accidental deletion.
+The delete-agent.md documentation describes a simple user workflow for permanently deleting agents from the AutoGPT platform's Monitor Tab.
 
 ### Identified Requirements
 
-#### 1.1 Functional Requirements
+#### Functional Requirements
+1. **FR-1**: User must be able to navigate to the Monitor Tab in AutoGPT builder
+2. **FR-2**: System must display a list of existing agents
+3. **FR-3**: User must be able to select/click on a specific agent
+4. **FR-4**: System must display a trash icon on the right side of the interface for the selected agent
+5. **FR-5**: User must be able to click the trash icon to initiate deletion
+6. **FR-6**: System must display a confirmation dialog with the message "Are you sure you want to delete this agent?"
+7. **FR-7**: System must provide "Yes, delete" and implied "Cancel/No" options in the confirmation dialog
+8. **FR-8**: System must immediately remove the agent from the list upon confirmation
+9. **FR-9**: Deletion action must be permanent and irreversible
 
-| Requirement ID | Description | Type |
-|---|---|---|
-| FR-1 | User can navigate to Monitor Tab | Core |
-| FR-2 | System displays list of existing agents | Core |
-| FR-3 | User can select/click an agent from the list | Core |
-| FR-4 | User can access a delete action (trash icon) | Core |
-| FR-5 | System displays confirmation dialog before deletion | Safety |
-| FR-6 | User can confirm deletion with "Yes, delete" button | Core |
-| FR-7 | System removes agent from list upon confirmation | Core |
-| FR-8 | User can cancel deletion operation | Alternate |
+#### Non-Functional Requirements
+1. **NFR-1**: Deletion must be immediate after confirmation (performance)
+2. **NFR-2**: User must be warned that the action cannot be undone (usability/safety)
+3. **NFR-3**: Confirmation dialog prevents accidental deletion (safety)
 
-#### 1.2 Non-Functional Requirements
+#### Business Rules and Constraints
+1. **BR-1**: Deleted agents cannot be recovered
+2. **BR-2**: User must explicitly confirm deletion before execution
+3. **BR-3**: Only agents from the user's own list can be deleted
 
-| Requirement ID | Description |
-|---|---|
-| NFR-1 | Deletion action is irreversible (no undo capability) |
-| NFR-2 | User must be warned of irreversibility before confirmation |
-| NFR-3 | Confirmation dialog must be explicit and clear |
-| NFR-4 | Deletion must be immediate upon confirmation |
+### Actors
+- **Primary Actor**: User (someone managing agents in AutoGPT)
+- **System**: AutoGPT Platform
 
-#### 1.3 Business Rules & Constraints
+### Inputs
+- User navigation actions (clicks)
+- Agent selection
+- Trash icon click
+- Confirmation dialog response ("Yes, delete" or cancel)
 
-- **BR-1**: Deletion is a permanent action with no recovery option
-- **BR-2**: Confirmation required for all deletion operations (fail-safe mechanism)
-- **BR-3**: User awareness of consequence is mandatory (warning message required)
+### Outputs
+- Display of Monitor Tab with agent list
+- Display of trash icon
+- Display of confirmation dialog
+- Removal of agent from list
+- Updated agent list view
 
-#### 1.4 Actors & Stakeholders
+### System States
+1. **Initial State**: User at any location in AutoGPT
+2. **Monitor Tab Open**: User viewing list of agents
+3. **Agent Selected**: Specific agent is selected
+4. **Trash Icon Visible**: Trash icon displayed for selected agent
+5. **Confirmation Pending**: Confirmation dialog displayed
+6. **Agent Deleted**: Agent removed from list
+7. **Deletion Cancelled**: User returns to Monitor Tab with agent still present
 
-- **Primary Actor**: User/Administrator
-- **System**: AutoGPT Monitor application
+### Preconditions
+- User has access to AutoGPT builder
+- At least one agent exists in the user's account
+- User is authenticated and authorized
 
-#### 1.5 Preconditions
+### Postconditions
+- **Success Path**: Agent is permanently removed from the system
+- **Cancel Path**: Agent remains in the list, no changes made
 
-1. User is logged in to AutoGPT
-2. User has navigated to the Monitor Tab
-3. At least one agent exists in the Monitor list
-4. User has permission to delete agents
-
-#### 1.6 Postconditions
-
-- **Success**: Selected agent no longer exists in Monitor list
-- **Cancellation**: Agent remains in Monitor list unchanged
-- **State**: System returns to Monitor Tab view
-
-#### 1.7 Edge Cases & Exceptions
-
-| Edge Case | Expected Behavior |
-|---|---|
-| User cancels at confirmation dialog | Operation aborted, agent preserved |
-| User closes dialog without response | Operation aborted (implicit cancellation) |
-| Agent deleted while viewing its details | Graceful error handling required |
-| Network failure during deletion | Rollback to original state |
-| Last agent in system deleted | System should handle empty list state |
+### Edge Cases and Exception Scenarios
+1. **EC-1**: User attempts to delete the last agent in the list
+2. **EC-2**: User cancels the deletion dialog
+3. **EC-3**: Network interruption during deletion
+4. **EC-4**: User has no agents to delete (empty list)
+5. **EC-5**: User navigates away during confirmation dialog
+6. **EC-6**: Concurrent deletion of the same agent (if multi-user access exists)
 
 ---
 
 ## Section 2: Evaluation of Possible Representations
 
-### 2.1 Activity Diagram / Flowchart
+### 2.1 Flowchart / Activity Diagram
+**Strengths:**
+- Visually represents the step-by-step workflow clearly
+- Shows decision points (confirmation dialog)
+- Easy to derive positive and negative test cases
+- Supports identification of all possible paths through the system
+- Excellent for procedural workflows like this delete operation
 
-**Pros:**
+**Weaknesses:**
+- May not capture state persistence well
+- Limited in showing concurrent activities
+- Less effective for complex conditional logic
 
-- Visual representation of sequential steps and decision points
-- Clear depiction of branching paths (confirm/cancel)
-- Intuitive for non-technical stakeholders
-- Identifies all possible execution flows
+**Suitability for Test Derivation:** ⭐⭐⭐⭐⭐ (Excellent)
+- Direct mapping from nodes to test steps
+- Clear visualization of decision branches for test path coverage
 
-**Cons:**
+### 2.2 Sequence Diagram
+**Strengths:**
+- Shows interaction between user and system components
+- Temporal ordering of messages/actions
+- Good for integration and API testing
+- Highlights actor-system communication
 
-- Not directly executable as test code
-- Requires manual conversion to test cases
-- Limited detail on data/state changes
+**Weaknesses:**
+- Doesn't emphasize decision logic as clearly
+- Less intuitive for functional test case extraction
+- May be overly detailed for simple workflows
 
-**Score: 8/10** - Excellent for visualization and flow clarity
+**Suitability for Test Derivation:** ⭐⭐⭐⭐ (Very Good)
+- Useful for understanding interaction patterns
+- Supports API/integration test scenarios
 
----
+### 2.3 State Machine / State Diagram
+**Strengths:**
+- Models system states and transitions
+- Excellent for capturing pre/post conditions
+- Helps identify invalid state transitions
+- Good for negative testing scenarios
 
-### 2.2 UML State Diagram
+**Weaknesses:**
+- May be overkill for simple linear workflows
+- Requires careful state identification
+- Can become complex with many states
 
-**Pros:**
-- Models system states and transitions clearly
-- Shows guard conditions and events
-- Identifies all valid state combinations
-- Supports formal verification approaches
+**Suitability for Test Derivation:** ⭐⭐⭐⭐ (Very Good)
+- Supports state-based testing
+- Reveals edge cases through invalid transitions
 
-**Cons:**
+### 2.4 Decision Table
+**Strengths:**
+- Compact representation of conditional logic
+- Ensures all combinations are covered
+- Direct mapping to test cases
+- Good for complex conditional scenarios
 
-- Limited representation of sequential user actions within a state
-- Requires additional documentation for action parameters
-- May be over-engineered for this relatively simple flow
+**Weaknesses:**
+- Less visual than diagrams
+- Limited for showing workflow progression
+- Best suited for multiple decision points, this feature has only one major decision
 
-**Score: 8/10** - Good for understanding state machine behavior
+**Suitability for Test Derivation:** ⭐⭐⭐ (Good)
+- Limited value for this simple workflow
+- Better for features with multiple conditional branches
 
----
+### 2.5 Gherkin (Given-When-Then)
+**Strengths:**
+- Natural language, readable by non-technical stakeholders
+- Direct translation to automated BDD tests
+- Captures scenarios including edge cases
+- Supports acceptance test-driven development
 
-### 2.3 Gherkin/BDD (Given-When-Then)
+**Weaknesses:**
+- Not as visual as diagrams
+- May lack structural overview
+- Requires discipline to remain concise
 
-**Pros:**
+**Suitability for Test Derivation:** ⭐⭐⭐⭐ (Very Good)
+- Excellent for acceptance criteria
+- Directly executable with BDD frameworks
 
-- **Direct executable test case format** (Cucumber/SpecFlow compatible)
-- Business-readable syntax bridges business and technical teams
-- Unambiguous scenario descriptions
-- One-to-one mapping: Scenario → Test Case
-- Supports multiple variants in Scenario Outline
-- Natural for capturing preconditions, actions, and expected results
-- Excellent traceability back to documentation
+### 2.6 Requirement Traceability Matrix (RTM)
+**Strengths:**
+- Excellent for traceability
+- Maps requirements to test cases explicitly
+- Supports verification and validation
 
-**Cons:**
+**Weaknesses:**
+- Tabular, not visual
+- Doesn't help with test case derivation itself
+- More of a tracking tool than a design tool
 
-- Requires tooling for execution (Cucumber, SpecFlow, etc.)
-- May become verbose for complex systems
+**Suitability for Test Derivation:** ⭐⭐ (Fair)
+- Complementary to other representations
+- Doesn't aid in test case creation directly
 
-**Score: 9/10** - **OPTIMAL for test case derivation**
+### 2.7 Use Case Specification
+**Strengths:**
+- Structured textual format
+- Captures flows (main, alternative, exception)
+- Well-understood industry standard
+- Good for documenting complete scenarios
 
----
+**Weaknesses:**
+- Verbose and text-heavy
+- Less visual than diagrams
+- May require additional diagrams for clarity
 
-### 2.4 Use-Case Specification (Cockburn Style)
-
-**Pros:**
-
-- Industry-standard format
-- Captures main flow, alternative flows, and exception flows
-- Clear preconditions and postconditions
-- Supports both actor and system actions
-
-**Cons:**
-
-- Requires manual test case extraction
-- More verbose than strictly necessary
-- Less directly executable
-
-**Score: 7/10** - Good but requires additional transformation
-
----
-
-### 2.5 Decision Table
-
-**Pros:**
-
-- Excellent for combination testing
-- Identifies test cases systematically
-- Compact representation
-
-**Cons:**
-
-- Best for systems with multiple boolean/discrete inputs
-- This feature has relatively simple decision logic
-- Limited for sequential workflows
-
-**Score: 5/10** - Underutilizes the representation capability
-
----
-
-### 2.6 Sequence Diagram
-
-**Pros:**
-
-- Shows interactions between actors and system
-- Clear message flow
-
-**Cons:**
-
-- Focuses on interactions rather than behavior/states
-- Difficult to derive test cases from
-- Less suitable for single-actor workflows
-
-**Score: 4/10** - Not optimal for this use case
-
----
-
-### 2.7 Requirement Traceability Matrix (RTM)
-
-**Pros:**
-
-- Maps requirements to tests
-- Tracks coverage
-
-**Cons:**
-
-- Only a mapping tool, not a representation of behavior
-- Requires other representations to be effective
-- Doesn't capture test scenarios itself
-
-**Score: 5/10** - Complementary, not primary
+**Suitability for Test Derivation:** ⭐⭐⭐⭐ (Very Good)
+- Flows directly map to test scenarios
+- Clear separation of success and failure paths
 
 ---
 
 ## Section 3: Selected Representation & Justification
 
-### 3.1 Chosen Approach: **Gherkin (BDD) + Activity Diagram**
+### Primary Representation: **Multi-Layered Mermaid Diagrams**
 
-#### Why This Combination?
+I recommend a **hybrid approach** using multiple complementary Mermaid diagram types:
 
-**Primary Representation: Gherkin (Given-When-Then)**
+1. **Flowchart (Activity Diagram)** - Primary representation
+2. **Sequence Diagram** - Supplementary for interaction details
+3. **State Diagram** - Supplementary for state transition validation
 
-- **Test Case Derivation**: Each Gherkin scenario directly translates to an executable test case—no intermediate translation needed
-- **Verification**: The structured Given-When-Then format ensures every step is explicit and verifiable against the documentation
-- **Traceability**: Each scenario explicitly maps to requirements; scenario titles reference original documentation sections
-- **Automation**: Compatible with standard BDD frameworks (Cucumber, SpecFlow) for immediate automation
-- **Stakeholder Communication**: Non-technical stakeholders can read and verify scenarios match their understanding
+### Justification
 
-**Secondary Representation: Activity Diagram**
+#### Why Flowchart as Primary?
+The delete agent feature is fundamentally a **procedural workflow** with:
+- Clear sequential steps
+- A single critical decision point (confirmation dialog)
+- Well-defined start and end states
+- Linear progression with one branch
 
-- Provides visual clarity of all possible execution paths
-- Identifies decision points (confirm/cancel)
-- Shows system states and transitions
-- Complements Gherkin by offering visual validation
+A flowchart excels at:
+1. **Test Case Derivation**: Each path through the flowchart maps directly to a test scenario
+   - Happy path: Navigate → Select → Delete → Confirm → Verify removal
+   - Alternative path: Navigate → Select → Delete → Cancel → Verify persistence
 
----
+2. **Traceability**: Each node can be labeled with requirement IDs (FR-1, FR-2, etc.), creating direct traceability back to documentation
 
-### 3.2 How This Representation Enables Key Requirements
+3. **Verification**: Reviewers can visually walk through the diagram and confirm it matches the documented steps
 
-| Requirement | How Addressed |
-|---|---|
-| **Systematic Test Case Derivation** | Each Gherkin scenario = one test case; Scenario Outline = multiple parameterized test cases |
-| **Traceability Back to Documentation** | Each scenario title and step references original doc sections and requirement IDs |
-| **Verification of Test Case Correctness** | Gherkin's Given-When-Then forces explicit statement of preconditions, actions, and expected results; easily verified against doc |
-| **Automation Potential** | Gherkin directly integrates with BDD tools; no manual translation required |
-| **Communication** | Human-readable format allows non-technical review; activity diagram provides visual verification |
+4. **Coverage Analysis**: Branch coverage and path coverage are immediately visible, ensuring no scenario is missed
 
----
+#### Why Sequence Diagram as Supplementary?
+- Clarifies the **user-system interaction pattern**
+- Useful for understanding component communication (UI → Backend → Database)
+- Supports integration testing scenarios
+- Shows temporal ordering of events
 
-### 3.3 Structured Gherkin Representation
+#### Why State Diagram as Supplementary?
+- Models the **agent's lifecycle states** (exists → deletion-pending → deleted)
+- Reveals **invalid state transitions** for negative testing
+- Captures system state before and after the operation
+- Helps identify edge cases (e.g., what if agent is already being deleted?)
 
-#### Feature Definition
+#### Advantages Over Alternatives
 
-```gherkin
-Feature: Delete Agent from AutoGPT Monitor
-  As a user
-  I want to delete agents I no longer need
-  So that my Monitor list stays organized
-  
-  Background:
-    Given I am logged in to AutoGPT
-    And I am viewing the Monitor Tab
-    And an agent named "Test Agent" exists in the list
-```
+**vs. Decision Tables:**
+- More visual and easier to understand workflow
+- Better at showing sequential progression
+- Decision table would have only 2 columns (confirm/cancel), underutilizing the format
 
-#### Scenarios
+**vs. Pure Gherkin:**
+- Diagrams provide structural overview that Gherkin lacks
+- Multiple stakeholders (developers, testers, business analysts) benefit from visual representations
+- Gherkin can be derived from the diagrams as a next step
 
-##### Scenario 1: Successful Agent Deletion (Happy Path)
+**vs. Use Case Specification Only:**
+- Diagrams are more concise and scannable
+- Visual representation reduces ambiguity
+- Easier to spot missing paths or logic errors
 
-```gherkin
-Scenario: User successfully deletes an agent with confirmation
-  Given I am viewing the Monitor Tab with agents listed
-  When I click on agent "Test Agent"
-  And I click the trash icon
-  Then a confirmation dialog appears with message "Are you sure you want to delete this agent?"
-  When I click "Yes, delete" button
-  Then the agent "Test Agent" is removed from the Monitor list
-  And the Monitor Tab displays only remaining agents
-  
-  # Requirement Traceability: FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, NFR-2, BR-2
-```
+#### Use of Mermaid
 
-##### Scenario 2: User Cancels Deletion at Confirmation
-
-```gherkin
-Scenario: User cancels deletion at confirmation dialog
-  Given I am viewing the Monitor Tab with agents listed
-  When I click on agent "Test Agent"
-  And I click the trash icon
-  Then a confirmation dialog appears with message "Are you sure you want to delete this agent?"
-  When I click "Cancel" or close the dialog
-  Then the agent "Test Agent" remains in the Monitor list
-  And the Monitor Tab returns to normal view
-  
-  # Requirement Traceability: FR-1, FR-2, FR-3, FR-4, FR-5, FR-8, BR-2
-```
-
-##### Scenario 3: Irreversibility Warning Verification
-
-```gherkin
-Scenario: User is informed that deletion is irreversible
-  Given I am viewing the Monitor Tab
-  When I click on an agent
-  And I click the trash icon
-  Then a confirmation dialog appears
-  And the dialog contains warning text stating "This action cannot be undone"
-  And the dialog prominently displays "Yes, delete" action
-  
-  # Requirement Traceability: NFR-1, NFR-2, BR-1, BR-3
-```
-
-##### Scenario 4: Delete Last Remaining Agent
-
-```gherkin
-Scenario: User deletes the last agent in the system
-  Given I am viewing the Monitor Tab
-  And only one agent "Final Agent" exists in the list
-  When I click on agent "Final Agent"
-  And I click the trash icon
-  And I confirm deletion by clicking "Yes, delete"
-  Then the agent is removed from the list
-  And the Monitor Tab displays an empty state or "No agents" message
-  
-  # Requirement Traceability: FR-7, Edge Case: Last agent deletion
-```
-
-##### Scenario 5: Multiple Agents - Delete Specific Agent
-
-```gherkin
-Scenario Outline: User deletes one agent while others remain
-  Given I am viewing the Monitor Tab with agents: <agent_list>
-  When I click on agent "<target_agent>"
-  And I click the trash icon
-  And I confirm deletion
-  Then agent "<target_agent>" is removed
-  And agents <remaining_agents> remain in the list
-  
-  Examples:
-    | agent_list | target_agent | remaining_agents |
-    | Agent A, Agent B, Agent C | Agent B | Agent A, Agent C |
-    | Agent 1, Agent 2 | Agent 1 | Agent 2 |
-  
-  # Requirement Traceability: FR-7, Multiple agent handling
-```
+Mermaid is chosen because:
+- **Textual format**: Version controllable, diff-friendly
+- **Wide support**: Renders in GitHub, GitLab, VS Code, documentation sites
+- **Maintainable**: Changes are quick and don't require specialized tools
+- **Multiple diagram types**: Supports flowchart, sequence, and state diagrams
+- **Standard syntax**: Well-documented and widely adopted
 
 ---
 
-### 3.4 Activity Diagram (Textual Representation)
+## Section 4: Mermaid Diagram Plan
 
+### 4.1 Flowchart (Activity Diagram)
+
+**Mermaid Directive:** `flowchart TD`
+
+**Purpose:**
+- Serve as the primary reference for test case derivation
+- Visualize the complete user workflow from start to finish
+- Identify all decision points and paths
+- Map each step to functional requirements
+
+**Scope:**
+- **Start**: User intent to delete an agent
+- **End**: Agent successfully deleted OR deletion cancelled
+- **Included flows**:
+  - Main success scenario (happy path)
+  - Alternative flow (user cancels deletion)
+- **Exclusions**: 
+  - Error handling for network failures (not documented)
+  - Authentication/authorization flows (assumed as precondition)
+  - Multiple agent deletion (not in scope)
+
+**Key Actors/Entities:**
+- User (initiator)
+- Monitor Tab (UI component)
+- Agent List (data display)
+- Trash Icon (UI control)
+- Confirmation Dialog (UI component)
+- System Backend (implicit, handles deletion)
+
+**Diagram Elements:**
+- Start/End nodes (rounded rectangles)
+- Process steps (rectangles) - each mapped to FR-x
+- Decision diamond (confirmation dialog)
+- Arrows showing flow direction
+- Annotations with requirement IDs
+
+**Test Case Derivation Strategy:**
+- Each complete path = 1 test scenario
+- Path 1: Start → Monitor → Select → Delete → Confirm → Verify (TC-001: Successful deletion)
+- Path 2: Start → Monitor → Select → Delete → Cancel → Verify (TC-002: Cancelled deletion)
+- Each node = verification point in test steps
+
+**Assumptions:**
+- Agent exists in the list
+- User has proper permissions
+- UI elements render correctly
+
+---
+
+### 4.2 Sequence Diagram
+
+**Mermaid Directive:** `sequenceDiagram`
+
+**Purpose:**
+- Detail the interaction between user and system components
+- Support integration and API testing
+- Clarify the temporal sequence of operations
+- Show system responses to user actions
+
+**Scope:**
+- **Start**: User clicks on agent in Monitor Tab
+- **End**: System updates the UI after deletion/cancellation
+- **Included interactions**:
+  - User → UI: Click agent
+  - UI → User: Display trash icon
+  - User → UI: Click trash icon
+  - UI → User: Show confirmation dialog
+  - User → UI: Click "Yes, delete"
+  - UI → Backend: Delete agent request
+  - Backend → Database: Remove agent record
+  - Database → Backend: Confirmation
+  - Backend → UI: Success response
+  - UI → User: Update agent list
+
+**Key Actors/Entities:**
+- User
+- UI (Frontend)
+- Backend API
+- Database (implicit)
+
+**Diagram Elements:**
+- Participants (User, UI, Backend)
+- Synchronous messages (solid arrows)
+- Return messages (dashed arrows)
+- Activation boxes showing processing time
+- Alt frame for confirmation decision (Yes vs Cancel)
+
+**Test Case Derivation Strategy:**
+- Each message = API call to verify/mock in tests
+- Supports contract testing between UI and Backend
+- Helps identify integration points for testing
+
+**Assumptions:**
+- Standard RESTful API pattern
+- Synchronous deletion operation
+- Single-step deletion (no multi-phase commit)
+
+---
+
+### 4.3 State Diagram
+
+**Mermaid Directive:** `stateDiagram-v2`
+
+**Purpose:**
+- Model the agent's state lifecycle
+- Identify valid and invalid state transitions
+- Support negative testing scenarios
+- Clarify pre-conditions and post-conditions
+
+**Scope:**
+- **States covered**:
+  - AgentExists (initial state)
+  - SelectedForDeletion
+  - DeletionPending (awaiting confirmation)
+  - Deleted (terminal state)
+  - AgentExists (if cancelled, return to initial)
+- **Transitions**:
+  - Select agent
+  - Click trash icon
+  - Confirm deletion
+  - Cancel deletion
+- **Exclusions**:
+  - Agent creation states
+  - Agent editing states
+  - Multi-agent operations
+
+**Key Actors/Entities:**
+- Agent (the entity being managed)
+- User actions trigger state transitions
+- System enforces valid transitions
+
+**Diagram Elements:**
+- State nodes (rounded rectangles)
+- Transition arrows with trigger labels
+- Initial state marker [*]
+- Terminal state marker for Deleted state
+- Notes on irreversibility
+
+**Test Case Derivation Strategy:**
+- Valid transitions = positive test cases
+- Invalid transitions = negative test cases (e.g., delete already deleted agent)
+- State-based test coverage: ensure all states are reachable and all transitions are tested
+
+**Assumptions:**
+- Agent has a state property in the system
+- States are mutually exclusive
+- Deletion is a one-way transition (no undo)
+
+---
+
+## Section 5: Traceability and Verification Strategy
+
+### Requirement Mapping in Diagrams
+Each diagram element will be annotated with requirement IDs:
+- Flowchart nodes: `[FR-1] Navigate to Monitor`
+- Sequence messages: `User clicks trash icon [FR-5]`
+- State transitions: `confirm [FR-7, FR-8]`
+
+### Verification Checklist
+To verify that derived test cases correctly reflect documentation:
+1. ✅ Every functional requirement (FR-1 to FR-9) appears in at least one diagram
+2. ✅ Every documented step has a corresponding flowchart node
+3. ✅ Decision points in documentation match decision diamonds/alt frames
+4. ✅ All mentioned UI elements (trash icon, dialog) are represented
+5. ✅ Documented outcomes (deletion, cancellation) are terminal states
+6. ✅ Warnings and constraints (irreversibility) are annotated
+
+### Test Case Derivation Method
+1. **Path-based testing** from flowchart (basis path coverage)
+2. **Scenario-based testing** from sequence diagram (interaction scenarios)
+3. **State-based testing** from state diagram (state coverage, transition coverage)
+
+### Traceability Matrix (To be created separately)
 ```
-START
-  ↓
-[User in Monitor Tab] ─→ [Agent List Displayed]
-  ↓
-[User Selects Agent] ─→ [Agent Highlighted]
-  ↓
-[User Clicks Trash Icon]
-  ↓
-[System Shows Confirmation Dialog]
-  │
-  ├─→ [User Clicks "Yes, Delete"] ─→ [System Deletes Agent] ─→ [Agent Removed from List] ─→ END (Success)
-  │
-  └─→ [User Clicks "Cancel" OR Closes Dialog] ─→ [Operation Aborted] ─→ [Agent Remains in List] ─→ END (Cancelled)
-
-Guard Conditions:
-- Dialog must appear before permanent deletion
-- Agent must exist to be selected
-- Confirmation is mandatory
+| Requirement ID | Diagram Reference | Test Case ID |
+|----------------|-------------------|--------------|
+| FR-1           | FC-Node-1, SD-1   | TC-001, TC-002 |
+| FR-2           | FC-Node-2, SD-2   | TC-001, TC-002 |
+| ...            | ...               | ...          |
 ```
 
 ---
 
-### 3.5 Advantages of This Representation for the Purpose
+## Section 6: Recommended Next Steps
 
-| Purpose | Advantage |
-|---|---|
-| **Systematic Test Case Derivation** | Each Gherkin scenario = 1+ test cases; Scenario Outlines create parameterized test families |
-| **Traceability** | Requirement IDs embedded in scenario comments; Bidirectional mapping (requirement ↔ test) |
-| **Verification** | Activity diagram visually validates all paths covered; Gherkin scenarios explicitly state expected behavior |
-| **Automation Ready** | Direct integration with Cucumber, SpecFlow, pytest-bdd; No manual coding required |
-| **Stakeholder Communication** | Gherkin readable by business users; Activity diagram provides visual summary |
-| **Change Management** | When doc changes, updating Gherkin is straightforward; Visual diagram helps identify impact |
-| **Edge Case Coverage** | Dedicated scenarios for edge cases (cancellation, last agent, etc.); Ensures comprehensive testing |
+### Phase 1: Diagram Creation
+1. Create flowchart using `flowchart TD` in Mermaid
+2. Create sequence diagram using `sequenceDiagram` in Mermaid
+3. Create state diagram using `stateDiagram-v2` in Mermaid
+4. Review diagrams against documentation for completeness
 
----
+### Phase 2: Test Case Derivation
+1. Extract test scenarios from flowchart paths
+2. Derive API test cases from sequence diagram
+3. Generate state-based test cases from state diagram
+4. Create Gherkin scenarios for BDD (optional)
 
-## Section 4: Test Case Derivation Summary
-
-### Generated Test Cases from Representation
-
-| Test Case ID | Derived From | Test Case Name | Priority |
-|---|---|---|---|
-| TC-001 | Scenario 1 | Successful deletion with confirmation | P0 (Critical) |
-| TC-002 | Scenario 2 | Cancellation at confirmation dialog | P1 (High) |
-| TC-003 | Scenario 2 | Dialog closure without action | P1 (High) |
-| TC-004 | Scenario 3 | Irreversibility warning presence | P1 (High) |
-| TC-005 | Scenario 4 | Delete last agent - empty state | P2 (Medium) |
-| TC-006 | Scenario 5 (Outline 1) | Delete Agent B from 3-agent list | P1 (High) |
-| TC-007 | Scenario 5 (Outline 2) | Delete Agent 1 from 2-agent list | P1 (High) |
+### Phase 3: Validation
+1. Map each test case back to requirement IDs
+2. Ensure 100% requirement coverage
+3. Peer review for accuracy and completeness
 
 ---
 
-## Conclusion
+## Metadata
 
-The **Gherkin + Activity Diagram** representation is optimal for this documentation because it:
+**Analysis Performed By:** GitHub Copilot (Claude Sonnet 4.5)  
+**Analysis Date:** January 24, 2026  
+**Source Documentation:** `d:\RP\docs\content\platform\delete-agent.md`  
+**Output Location:** `d:\RP\plan\delete-agent-representation.md`  
 
-1. **Enables direct test case derivation** without intermediate translation steps
-2. **Maintains complete traceability** from requirements through test cases back to documentation
-3. **Supports verification** through human-readable specifications that stakeholders can validate
-4. **Facilitates automation** through standard BDD tooling integration
-5. **Handles edge cases** explicitly through dedicated scenarios
-6. **Communicates intent** clearly to both technical and non-technical audiences
+**Execution Context:**
+- Model: Claude Sonnet 4.5
+- Task: Documentation analysis and structured representation planning
+- Approach: Multi-layered diagram strategy using Mermaid
+- Primary Representation: Flowchart (Activity Diagram)
+- Supplementary: Sequence Diagram, State Diagram
 
-This representation transforms business requirements into verifiable, executable test specifications while maintaining explicit linkage to the original documentation.
+**Confidence Level:** High
+- Documentation is clear and unambiguous
+- Requirements are well-defined
+- Workflow is straightforward with minimal complexity
+- Recommended representations are industry-standard and well-suited
+
+**Limitations:**
+- Analysis assumes standard web application architecture
+- Network/error handling scenarios not documented, thus not included
+- Multi-user concurrent deletion scenarios not addressed in source docs
+- Backend implementation details are abstracted
+
+---
+
+## Summary
+
+This analysis recommends a **multi-layered Mermaid diagram approach** with:
+1. **Flowchart** as the primary test derivation source (procedural workflow)
+2. **Sequence Diagram** for interaction and integration testing
+3. **State Diagram** for lifecycle and transition validation
+
+This combination ensures:
+- ✅ Comprehensive coverage of all documented scenarios
+- ✅ Direct traceability from diagrams back to requirements
+- ✅ Multiple perspectives for thorough test case derivation
+- ✅ Visual, maintainable, and version-controllable representations
+- ✅ Support for both manual and automated testing strategies
+
+The chosen representations strike an optimal balance between **clarity, completeness, and usability** for systematic test case derivation.

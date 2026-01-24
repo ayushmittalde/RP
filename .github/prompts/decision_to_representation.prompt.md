@@ -45,6 +45,7 @@ Mark each task as:
 1. Load and understand the approved plan file provided by the user.
    - Identify the selected representation (e.g., decision tables, state machine, Gherkin, RTM, etc.)
    - Identify the modeling rules, structure, and constraints defined in the plan
+   - If the plan mandates Mermaid diagrams (e.g., `flowchart TD`, `sequenceDiagram`, `stateDiagram-v2`), list which diagrams are required and the scope for each
 
 2. Re-read the original documentation and map it precisely into the chosen representation.
    Ensure coverage of:
@@ -60,11 +61,13 @@ Mark each task as:
    - Explicit conditions and expected outcomes
    - Traceability references to the source documentation
    - Clear separation of logic (no ambiguity or mixed concerns)
+   - If Mermaid diagrams are required, render them in fenced ```mermaid blocks using the exact directives specified in the plan (e.g., `flowchart TD`, `sequenceDiagram`, `stateDiagram-v2`); keep nodes, guards, and swimlanes aligned with the plan
 
 4. Validate the representation by:
    - Checking completeness against the plan
    - Ensuring no undocumented behavior is introduced
    - Verifying that each element can be directly converted into one or more test cases
+   - For Mermaid diagrams, ensure they are syntactically valid, cover the scoped flows/states, and preserve traceability labels/IDs from the plan
 
 5. Store the final representation using the #tool:edit tool at:
    representation/<appropriate_filename>.<md|json|yaml>
@@ -83,14 +86,3 @@ Mark each task as:
 - Provide the exact file path
 - Ask the user to review and approve the representation
 - Suggest proceeding with the representation-to-testcases prompt after approval
-
-### 🔹 Activity Diagram (Mermaid-style)
-```mermaid
-flowchart TD
-    Start([Start])
-    Start --> Action1[User enters data]
-    Action1 --> Decision{Valid?}
-    Decision -->|Yes| Action2[Process data]
-    Decision -->|No| Action3[Show error]
-    Action2 --> End([End])
-    Action3 --> Action1

@@ -53,19 +53,27 @@ Task tracking is valuable for:
    - Use-case specifications
    - Formalized requirement schemas (e.g., structured requirement templates)
 
-3. Explicitly justify your chosen representation by explaining:
+3. Make an explicit plan for which diagrams to produce in Mermaid, covering a detailed flowchart/activity, sequence, and state diagrams when they add value. For each, state:
+   - Purpose of the diagram
+   - Scope (which flows or states to include)
+   - Key actors/entities
+   - Any exclusions or assumptions
+
+4. Explicitly justify your chosen representation by explaining:
    - Why it is suitable for test case derivation
    - How it enables verification and traceability
    - Its advantages over alternative representations for this context
+   - How Mermaid will be used to render the chosen diagrams (include the exact diagram type names e.g., `flowchart TD`, `sequenceDiagram`, `stateDiagram-v2`)
 
-4. Document your findings and decisions in a clear, structured format that can be easily followed and understood by another AI agent or human reviewer (e.g., markdown with sections, tables, or structured text) and store it in a file using the #tool:edit tool at plan/<appropriate_filename>.md
+5. Document your findings and decisions in a clear, structured format that can be easily followed and understood by another AI agent or human reviewer (e.g., markdown with sections, tables, or structured text) and store it in a file using the #tool:edit tool at plan/<appropriate_filename>.md
 
-5. If possible provide metadata about model used and tokens consumed along with other relevant information about the execution at the end of the file.
+6. If possible provide metadata about model used and tokens consumed along with other relevant information about the execution at the end of the file.
 
 Output Format:
 - Section 1: Documentation Analysis Summary
 - Section 2: Evaluation of Possible Representations
 - Section 3: Selected Representation & Justification
+- Section 4: Mermaid Diagram Plan (flowchart/activity, sequence, state) with purpose, scope, actors, and rendering directive (e.g., `flowchart TD`)
 
 Do not invent requirements. Base everything strictly on the given content.
 
