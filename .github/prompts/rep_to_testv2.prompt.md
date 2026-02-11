@@ -1,10 +1,10 @@
 ---
-name: representation-to-test
-description: Derive a deterministic, executable Playwright test suite from an approved structured representation document.
+name: representation-to-test-V2
+description: V2 Derive a deterministic, executable Playwright test suite from an approved structured representation document.
 tools:
-  ['read/problems', 'read/readFile', 'edit', 'search', 'web', 'agent', 'todo', 'agent/runSubagent']
+  ['execute/testFailure', 'execute/getTerminalOutput', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'read/readFile', 'edit', 'search', 'web', 'agent', 'todo']
 agent: agent
-argument-hint: Provide the structured representation using Add Context
+argument-hint: Provide the structured representation using Add Context V2
 ---
 
 You are a Principal QA Automation Architect and Test Generation Agent.

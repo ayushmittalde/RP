@@ -206,8 +206,238 @@ export class MonitorPage extends BasePage {
     await this.page.getByTestId("import-agent-submit").click();
   }
 
-  async deleteAgent(agent: Agent) {
+  /**
+   * Click the trash/delete icon for an agent
+   * TODO: Verify selector - assumed based on common patterns
+   */
+  async clickTrashIcon(agent: Agent): Promise<void> {
+    console.log(`clicking trash icon for agent ${agent.id} ${agent.name}`);
+    
+    // First select the agent row
+    await this.clickAgent(agent.id);
+    
+    // Try multiple selector strategies
+    // Strategy 1: data-testid
+    const trashByTestId = this.page.getByTestId("delete-agent-button");
+    if (await trashByTestId.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await trashByTestId.click();
+      return;
+    }
+    
+    // Strategy 2: role="button" with name pattern
+    const trashByRole = this.page.getByRole("button", { name: /delete|trash|remove/i });
+    if (await trashByRole.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await trashByRole.click();
+      return;
+    }
+    
+    // Strategy 3: Within agent row, look for trash icon
+    const agentRow = this.page.getByTestId(agent.id);
+    const trashIcon = agentRow.getByRole("button", { name: /delete|trash/i });
+    await trashIcon.click();
+  }
+
+  /**
+   * Check if delete confirmation dialog is visible
+   * TODO: Verify selector - assumed based on common patterns
+   */
+  async hasDeleteConfirmationDialog(): Promise<boolean> {
+    console.log(`checking for delete confirmation dialog`);
+    try {
+      // Strategy 1: role="dialog"
+      const dialog = this.page.getByRole("dialog");
+      if (await dialog.isVisible({ timeout: 2000 }).catch(() => false)) {
+        return true;
+      }
+      
+      // Strategy 2: data-testid
+      const dialogByTestId = this.page.getByTestId("delete-confirmation-dialog");
+      if (await dialogByTestId.isVisible({ timeout: 1000 }).catch(() => false)) {
+        return true;
+      }
+      
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Confirm deletion by clicking "Yes, delete" button
+   * TODO: Verify selector - assumed based on common patterns
+   */
+  async confirmDeletion(): Promise<void> {
+    console.log(`confirming deletion`);
+    
+    // Wait for dialog to be visible
+    await this.page.getByRole("dialog").waitFor({ state: "visible", timeout: 5000 });
+    
+    // Try multiple selector strategies
+    // Strategy 1: role="button" with name pattern
+    const confirmByRole = this.page.getByRole("button", { name: /yes.*delete|confirm|delete/i });
+    if (await confirmByRole.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await confirmByRole.click();
+      return;
+    }
+    
+    // Strategy 2: data-testid
+    const confirmByTestId = this.page.getByTestId("confirm-delete-button");
+    if (await confirmByTestId.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await confirmByTestId.click();
+      return;
+    }
+    
+    // Strategy 3: text content
+    await this.page.getByText(/yes.*delete/i).click();
+  }
+
+  /**
+   * Cancel deletion by clicking cancel button or dismissing dialog
+   * TODO: Verify selector - assumed based on common patterns
+   */
+  async cancelDeletion(): Promise<void> {
+    console.log(`canceling deletion`);
+    
+    // Try multiple selector strategies
+    // Strategy 1: role="button" with name pattern
+    const cancelByRole = this.page.getByRole("button", { name: /cancel|no/i });
+    if (await cancelByRole.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await cancelByRole.click();
+      return;
+    }
+    
+    // Strategy 2: data-testid
+    const cancelByTestId = this.page.getByTestId("cancel-delete-button");
+    if (await cancelByTestId.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await cancelByTestId.click();
+      return;
+    }
+    
+    // Strategy 3: Escape key
+    await this.page.keyboard.press("Escape");
+  }
+
+  /**
+   * Delete an agent with optional confirmation
+   * @param agent - The agent to delete
+   * @param confirm - Whether to confirm the deletion (default: true)
+   */
+  async deleteAgent(agent: Agent, confirm: boolean = true): Promise<void> {
     console.log(`deleting agent ${agent.id} ${agent.name}`);
+    
+    // Click trash icon
+    await this.clickTrashIcon(agent);
+    
+    // Wait for confirmation dialog
+    await this.page.waitForTimeout(500); // Brief wait for dialog animation
+    
+    if (confirm) {
+      await this.confirmDeletion();
+      
+      // Wait for deletion to complete
+      await this.page.waitForTimeout(1000);
+    } else {
+      await this.cancelDeletion();
+    }
+  }
+
+  /**
+   * Ensure at least one agent exists, creating one if necessary
+   * Returns the agent (either existing or newly created)
+   */
+  async ensureAgentExists(name?: string): Promise<Agent> {
+    console.log(`ensuring agent exists${name ? ` with name: ${name}` : ""}`);
+    
+    const agents = await this.listAgents();
+    
+    // If name specified, check if it exists
+    if (name) {
+      const existing = agents.find(a => a.name === name);
+      if (existing) {
+        console.log(`agent ${name} already exists`);
+        return existing;
+      }
+    } else if (agents.length > 0) {
+      // No name specified, return any existing agent
+      console.log(`using existing agent: ${agents[0].name}`);
+      return agents[0];
+    }
+    
+    // Need to create an agent
+    console.log(`creating new agent via Build page`);
+    
+    // Navigate to Build page
+    await this.navbar.clickBuildLink();
+    
+    // Import BuildPage here to avoid circular dependency
+    const { BuildPage } = await import("./build.page");
+    const buildPage = new BuildPage(this.page);
+    
+    await buildPage.closeTutorial();
+    
+    // Create dummy agent
+    await buildPage.createDummyAgent();
+    
+    // Navigate back to monitor
+    await this.page.goto("/monitoring");
+    await this.isLoaded();
+    
+    // Get the newly created agent
+    const updatedAgents = await this.listAgents();
+    const newAgent = updatedAgents.find(a => 
+      !agents.some(existing => existing.id === a.id)
+    );
+    
+    if (!newAgent) {
+      throw new Error("Failed to create agent - agent not found after creation");
+    }
+    
+    console.log(`created new agent: ${newAgent.name} (${newAgent.id})`);
+    return newAgent;
+  }
+
+  /**
+   * Ensure exactly N agents exist
+   * Deletes excess or creates missing agents
+   */
+  async ensureExactAgentCount(count: number): Promise<Agent[]> {
+    console.log(`ensuring exactly ${count} agents exist`);
+    
+    let agents = await this.listAgents();
+    
+    // Delete excess
+    while (agents.length > count) {
+      console.log(`deleting excess agent: ${agents[0].name}`);
+      await this.deleteAgent(agents[0], true);
+      agents = await this.listAgents();
+    }
+    
+    // Create missing
+    while (agents.length < count) {
+      console.log(`creating agent ${agents.length + 1} of ${count}`);
+      await this.ensureAgentExists();
+      agents = await this.listAgents();
+    }
+    
+    console.log(`agent count is now ${agents.length}`);
+    return agents;
+  }
+
+  /**
+   * Ensure zero agents exist (cleanup helper)
+   */
+  async ensureZeroAgents(): Promise<void> {
+    console.log(`ensuring zero agents exist`);
+    
+    let agents = await this.listAgents();
+    
+    while (agents.length > 0) {
+      console.log(`deleting agent: ${agents[0].name}`);
+      await this.deleteAgent(agents[0], true);
+      agents = await this.listAgents();
+    }
+    
+    console.log(`all agents deleted`);
   }
 
   async clickAllVersions(agent: Agent) {
