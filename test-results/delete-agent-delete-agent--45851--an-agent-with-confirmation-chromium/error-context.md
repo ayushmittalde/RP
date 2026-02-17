@@ -1,0 +1,80 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e3]:
+      - navigation [ref=e4]:
+        - img "Icon" [ref=e10]
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - heading "Agents" [level=3] [ref=e26]
+            - generic [ref=e27]:
+              - button "Create" [ref=e28] [cursor=pointer]:
+                - link "Create" [ref=e29]:
+                  - /url: /build
+              - button [ref=e30] [cursor=pointer]:
+                - img [ref=e31]
+          - table [ref=e35]:
+            - rowgroup [ref=e36]:
+              - 'row "Name # of runs Last run" [ref=e37]':
+                - columnheader "Name" [ref=e38]
+                - columnheader "# of runs" [ref=e39]
+                - columnheader "Last run" [ref=e40]
+            - rowgroup
+        - generic [ref=e41]:
+          - heading "Runs" [level=3] [ref=e43]
+          - table [ref=e46]:
+            - rowgroup [ref=e47]:
+              - row "Agent Started Status Duration" [ref=e48]:
+                - columnheader "Agent" [ref=e49]
+                - columnheader "Started" [ref=e50]
+                - columnheader "Status" [ref=e51]
+                - columnheader "Duration" [ref=e52]
+            - rowgroup
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - heading "Stats" [level=3] [ref=e56]
+            - generic [ref=e57]:
+              - button "2h" [ref=e58] [cursor=pointer]
+              - button "8h" [ref=e59] [cursor=pointer]
+              - button "24h" [ref=e60] [cursor=pointer]
+              - button "7d" [ref=e61] [cursor=pointer]
+              - button "Custom" [ref=e62] [cursor=pointer]
+              - button "All" [ref=e63] [cursor=pointer]
+          - application [ref=e66]
+          - separator [ref=e67]
+          - generic [ref=e68]:
+            - paragraph [ref=e69]:
+              - strong [ref=e70]: "Total runs:"
+              - text: "0"
+            - paragraph [ref=e71]:
+              - strong [ref=e72]: "Total run time:"
+              - text: 0 seconds
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - heading "Schedules" [level=3] [ref=e76]
+            - generic [ref=e77]:
+              - combobox [ref=e78] [cursor=pointer]:
+                - generic: Filter by graph
+                - img [ref=e79]
+              - button "New Schedule" [ref=e81] [cursor=pointer]:
+                - img [ref=e82]
+                - text: New Schedule
+          - table [ref=e89]:
+            - rowgroup [ref=e90]:
+              - row "Graph Name Graph Version Next Execution Schedule Timezone Actions" [ref=e91]:
+                - columnheader "Graph Name" [ref=e92] [cursor=pointer]
+                - columnheader "Graph Version" [ref=e93] [cursor=pointer]
+                - columnheader "Next Execution" [ref=e94] [cursor=pointer]
+                - columnheader "Schedule" [ref=e95] [cursor=pointer]
+                - columnheader "Timezone" [ref=e96]
+                - columnheader "Actions" [ref=e97]
+            - rowgroup [ref=e98]:
+              - row "No schedules are available" [ref=e99]:
+                - cell "No schedules are available" [ref=e100]
+    - button "Give Feedback" [ref=e102] [cursor=pointer]
+  - region "Notifications alt+T"
+  - alert [ref=e103]
+```

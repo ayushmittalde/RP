@@ -33,7 +33,7 @@ export default defineConfig({
     bypassCSP: true,
 
     /* Helps debugging failures */
-    trace: "retain-on-failure",
+    trace: "on-first-retry",
     video: "retain-on-failure",
 
     /* Auto-accept cookies in all tests to prevent banner interference */

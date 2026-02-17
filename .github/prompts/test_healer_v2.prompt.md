@@ -1,6 +1,6 @@
 ---
-name: Playwright Test Healer V1
-description: V1 Fixes broken Playwright tests by analyzing test failure output and modifying the test code or selectors accordingly.
+name: Playwright Test Healer V2
+description: V2 Fixes broken Playwright tests by analyzing test failure output and modifying the test code or selectors accordingly.
 tools:
   ['execute/testFailure', 'execute/getTerminalOutput', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'read/readFile', 'edit', 'search', 'web', 'agent', 'todo']
 agent: agent

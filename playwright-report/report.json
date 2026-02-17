@@ -1,0 +1,238 @@
+{
+  "config": {
+    "configFile": "D:\\RP\\playwright.config.ts",
+    "rootDir": "D:/RP/AutoGPT/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": "D:\\RP\\AutoGPT\\tests\\global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/RP/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "D:/RP/AutoGPT/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 25000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "3way",
+    "version": "1.58.0",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm start",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "delete-agent\\delete-agent.spec.ts",
+      "file": "delete-agent/delete-agent.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Delete Agent from Monitor Tab",
+          "file": "delete-agent/delete-agent.spec.ts",
+          "line": 19,
+          "column": 6,
+          "specs": [
+            {
+              "title": "successfully delete an agent with confirmation",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22736,
+                      "error": {
+                        "message": "Error: Failed to create agent - agent not found after creation",
+                        "stack": "Error: Failed to create agent - agent not found after creation\n    at MonitorPage.ensureAgentExists (D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts:435:13)\n    at D:\\RP\\AutoGPT\\tests\\delete-agent\\delete-agent.spec.ts:48:19",
+                        "location": {
+                          "file": "D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts",
+                          "column": 13,
+                          "line": 435
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mpages\\monitor.page.ts:435\n\n\u001b[0m \u001b[90m 433 |\u001b[39m     \n \u001b[90m 434 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mnewAgent) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 435 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m\"Failed to create agent - agent not found after creation\"\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 436 |\u001b[39m     }\n \u001b[90m 437 |\u001b[39m     \n \u001b[90m 438 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m`created new agent: ${newAgent.name} (${newAgent.id})`\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts",
+                            "column": 13,
+                            "line": 435
+                          },
+                          "message": "Error: Failed to create agent - agent not found after creation\n\n\u001b[90m   at \u001b[39mpages\\monitor.page.ts:435\n\n\u001b[0m \u001b[90m 433 |\u001b[39m     \n \u001b[90m 434 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mnewAgent) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 435 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m\"Failed to create agent - agent not found after creation\"\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 436 |\u001b[39m     }\n \u001b[90m 437 |\u001b[39m     \n \u001b[90m 438 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m`created new agent: ${newAgent.name} (${newAgent.id})`\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at MonitorPage.ensureAgentExists (D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts:435:13)\u001b[22m\n\u001b[2m    at D:\\RP\\AutoGPT\\tests\\delete-agent\\delete-agent.spec.ts:48:19\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Francisco.Roberts39@yahoo.com'\u001b[39m, password: \u001b[32m'PiiJgQtWxfMW'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/monitoring\n"
+                        },
+                        {
+                          "text": "checking if monitor page is loaded\n"
+                        },
+                        {
+                          "text": "ensuring agent exists\n"
+                        },
+                        {
+                          "text": "listing agents\n"
+                        },
+                        {
+                          "text": "creating new agent via Build page\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "Tutorial not visible or already closed\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'Test Agent' with description 'Test Description'\n"
+                        },
+                        {
+                          "text": "checking if run button is enabled\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/monitoring\n"
+                        },
+                        {
+                          "text": "checking if monitor page is loaded\n"
+                        },
+                        {
+                          "text": "listing agents\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-11T21:06:56.588Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\RP\\test-results\\delete-agent-delete-agent--45851--an-agent-with-confirmation-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\RP\\test-results\\delete-agent-delete-agent--45851--an-agent-with-confirmation-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts",
+                        "column": 13,
+                        "line": 435
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "aaf4b83015d900ffabdd-202792f5a7e23a109a2a",
+              "file": "delete-agent/delete-agent.spec.ts",
+              "line": 46,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-02-11T21:06:51.736Z",
+    "duration": 28066.72399999993,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}
