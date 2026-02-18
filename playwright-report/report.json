@@ -70,21 +70,21 @@
   },
   "suites": [
     {
-      "title": "delete-agent\\delete-agent.spec.ts",
-      "file": "delete-agent/delete-agent.spec.ts",
+      "title": "feature_delete_agent\\delete-agent.spec.ts",
+      "file": "feature_delete_agent/delete-agent.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Delete Agent from Monitor Tab",
-          "file": "delete-agent/delete-agent.spec.ts",
-          "line": 19,
+          "title": "Delete Agent Feature",
+          "file": "feature_delete_agent/delete-agent.spec.ts",
+          "line": 58,
           "column": 6,
           "specs": [
             {
-              "title": "successfully delete an agent with confirmation",
-              "ok": false,
+              "title": "TC-001: successfully delete an agent — agent removed from library",
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -97,28 +97,9 @@
                     {
                       "workerIndex": 4,
                       "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 22736,
-                      "error": {
-                        "message": "Error: Failed to create agent - agent not found after creation",
-                        "stack": "Error: Failed to create agent - agent not found after creation\n    at MonitorPage.ensureAgentExists (D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts:435:13)\n    at D:\\RP\\AutoGPT\\tests\\delete-agent\\delete-agent.spec.ts:48:19",
-                        "location": {
-                          "file": "D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts",
-                          "column": 13,
-                          "line": 435
-                        },
-                        "snippet": "\u001b[90m   at \u001b[39mpages\\monitor.page.ts:435\n\n\u001b[0m \u001b[90m 433 |\u001b[39m     \n \u001b[90m 434 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mnewAgent) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 435 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m\"Failed to create agent - agent not found after creation\"\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 436 |\u001b[39m     }\n \u001b[90m 437 |\u001b[39m     \n \u001b[90m 438 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m`created new agent: ${newAgent.name} (${newAgent.id})`\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts",
-                            "column": 13,
-                            "line": 435
-                          },
-                          "message": "Error: Failed to create agent - agent not found after creation\n\n\u001b[90m   at \u001b[39mpages\\monitor.page.ts:435\n\n\u001b[0m \u001b[90m 433 |\u001b[39m     \n \u001b[90m 434 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mnewAgent) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 435 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m\"Failed to create agent - agent not found after creation\"\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 436 |\u001b[39m     }\n \u001b[90m 437 |\u001b[39m     \n \u001b[90m 438 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m`created new agent: ${newAgent.name} (${newAgent.id})`\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at MonitorPage.ensureAgentExists (D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts:435:13)\u001b[22m\n\u001b[2m    at D:\\RP\\AutoGPT\\tests\\delete-agent\\delete-agent.spec.ts:48:19\u001b[22m"
-                        }
-                      ],
+                      "status": "passed",
+                      "duration": 8403,
+                      "errors": [],
                       "stdout": [
                         {
                           "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
@@ -133,7 +114,7 @@
                           "text": "🔖 User pool version: 1.0.0\n"
                         },
                         {
-                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Francisco.Roberts39@yahoo.com'\u001b[39m, password: \u001b[32m'PiiJgQtWxfMW'\u001b[39m }\n"
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Cheyanne_Koepp33@hotmail.com'\u001b[39m, password: \u001b[32m'ieFVfk9t1QG8'\u001b[39m }\n"
                         },
                         {
                           "text": "🖱️ Clicking login button...\n"
@@ -151,22 +132,470 @@
                           "text": "✅ Login process complete\n"
                         },
                         {
-                          "text": "ℹ️ Now at URL: http://localhost:3000/monitoring\n"
-                        },
-                        {
-                          "text": "checking if monitor page is loaded\n"
-                        },
-                        {
-                          "text": "ensuring agent exists\n"
-                        },
-                        {
-                          "text": "listing agents\n"
-                        },
-                        {
-                          "text": "creating new agent via Build page\n"
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
                         },
                         {
                           "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC001-Agent-1771428930314' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        },
+                        {
+                          "text": "checking if agent exists: TC001-Agent-1771428930314\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC001-Agent-1771428930314\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "confirming agent deletion\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:35:25.826Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-bc57ff97fdfc7b38910b",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "TC-002: cancel deletion via Cancel button — agent remains in library",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5903,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Sherri97@yahoo.com'\u001b[39m, password: \u001b[32m'vSQ8Oc6G5nI0'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC002-Agent-1771428936867' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC002-Agent-1771428936867\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "cancelling agent deletion\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:35:34.759Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-85acf6088c65ffdf1f6b",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 151,
+              "column": 7
+            },
+            {
+              "title": "TC-003: dismiss deletion dialog with X button — agent remains",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6260,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Wilton_Gerlach@gmail.com'\u001b[39m, password: \u001b[32m'0ZPTDSqf8KZ2'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC003-Agent-1771428943034' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC003-Agent-1771428943034\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "closing delete dialog with X button\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:35:40.687Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-85fac7b6acd8bfeae5ad",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 197,
+              "column": 7
+            },
+            {
+              "title": "TC-004: delete confirmation dialog shows correct content and safety controls",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5496,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Elias49@gmail.com'\u001b[39m, password: \u001b[32m'S8XbfeZdmmIo'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC004-Agent-1771428948701' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC004-Agent-1771428948701\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "cancelling agent deletion\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:35:46.963Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-7ebf65929a066b14a41f",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 235,
+              "column": 7
+            },
+            {
+              "title": "TC-005: More actions button is visible on agent card and contains delete option",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4927,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Sherri97@yahoo.com'\u001b[39m, password: \u001b[32m'vSQ8Oc6G5nI0'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC005-Agent-1771428954409' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:35:52.473Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-f70d984769da0a83db2a",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 294,
+              "column": 7
+            },
+            {
+              "title": "TC-006: delete one agent when multiple exist — others remain unchanged",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8230,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Sherri97@yahoo.com'\u001b[39m, password: \u001b[32m'vSQ8Oc6G5nI0'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC006-Delete-1771428959250' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
                         },
                         {
                           "text": "closing tutorial\n"
@@ -175,50 +604,429 @@
                           "text": "Tutorial not visible or already closed\n"
                         },
                         {
-                          "text": "💾 Saving agent 'Test Agent' with description 'Test Description'\n"
+                          "text": "💾 Saving agent 'TC006-Keep-1771428959250' with description 'Agent for delete testing'\n"
                         },
                         {
-                          "text": "checking if run button is enabled\n"
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
                         },
                         {
-                          "text": "ℹ️ Now at URL: http://localhost:3000/monitoring\n"
+                          "text": "checking if library page is loaded\n"
                         },
                         {
-                          "text": "checking if monitor page is loaded\n"
+                          "text": "Library page is loaded successfully\n"
                         },
                         {
-                          "text": "listing agents\n"
+                          "text": "deleting agent: TC006-Delete-1771428959250\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC006-Delete-1771428959250\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "confirming agent deletion\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-02-11T21:06:56.588Z",
+                      "startTime": "2026-02-18T15:35:57.415Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-f392520e51c1d1413080",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 336,
+              "column": 7
+            },
+            {
+              "title": "TC-007: agent is removed from UI immediately without page refresh",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7374,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Sherri97@yahoo.com'\u001b[39m, password: \u001b[32m'vSQ8Oc6G5nI0'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC007-Agent-1771428967535' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC007-Agent-1771428967535\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "confirming agent deletion\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:36:05.665Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-70aa1df1221a18ccbf9a",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 388,
+              "column": 7
+            },
+            {
+              "title": "TC-008: agents-count badge updates immediately after deletion",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5765,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Freida_Ortiz83@yahoo.com'\u001b[39m, password: \u001b[32m'7U_TaVduk0ev'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC008-Agent-1771428975527' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        },
+                        {
+                          "text": "deleting agent: TC008-Agent-1771428975527\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC008-Agent-1771428975527\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "confirming agent deletion\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:36:13.056Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-b1958356c96c41f912e9",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 424,
+              "column": 7
+            },
+            {
+              "title": "TC-009: user can navigate to Library page and see agent list",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3341,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Freida_Ortiz83@yahoo.com'\u001b[39m, password: \u001b[32m'7U_TaVduk0ev'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:36:18.846Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "20874ac064ae8a2095a5-8a9040a0e387fd0ebb87",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 457,
+              "column": 7
+            },
+            {
+              "title": "TC-010: agent is NOT deleted when dialog is shown but not confirmed",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 25000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 25116,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 25000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 25000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 25000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "D:\\RP\\AutoGPT\\tests\\pages\\library.page.ts",
+                            "column": 26,
+                            "line": 450
+                          },
+                          "message": "Error: locator.click: Test timeout of 25000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('library-agent-card').filter({ hasText: 'TC010-Agent-1771428984143' }).first().getByRole('button', { name: 'More actions' })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" id=\"radix-_r_4_\" data-state=\"closed\" aria-haspopup=\"menu\" aria-expanded=\"false\" aria-label=\"More actions\" data-sentry-element=\"DropdownMenuTrigger\" data-sentry-source-file=\"AgentCardMenu.tsx\" class=\"absolute right-2 top-1 rounded p-1.5 transition-opacity hover:bg-neutral-100\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <html lang=\"en\" data-sentry-component=\"RootLayout\" data-sentry-source-file=\"layout.tsx\" class=\"__variable_6bee3b __variable_fb8f2c __variable_f910ec light\">…</html> intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <html lang=\"en\" data-sentry-component=\"RootLayout\" data-sentry-source-file=\"layout.tsx\" class=\"__variable_6bee3b __variable_fb8f2c __variable_f910ec light\">…</html> intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    36 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <html lang=\"en\" data-sentry-component=\"RootLayout\" data-sentry-source-file=\"layout.tsx\" class=\"__variable_6bee3b __variable_fb8f2c __variable_f910ec light\">…</html> intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[90m   at \u001b[39mpages\\library.page.ts:450\n\n\u001b[0m \u001b[90m 448 |\u001b[39m     \u001b[36mawait\u001b[39m card\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mwaitFor({ state\u001b[33m:\u001b[39m \u001b[32m\"visible\"\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m10\u001b[39m_000 })\u001b[33m;\u001b[39m\n \u001b[90m 449 |\u001b[39m     \u001b[36mconst\u001b[39m moreActionsBtn \u001b[33m=\u001b[39m card\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mgetByRole(\u001b[32m\"button\"\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m\"More actions\"\u001b[39m })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 450 |\u001b[39m     \u001b[36mawait\u001b[39m moreActionsBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 451 |\u001b[39m   }\n \u001b[90m 452 |\u001b[39m\n \u001b[90m 453 |\u001b[39m   \u001b[90m/**\u001b[39m\u001b[0m\n\u001b[2m    at LibraryPage.openAgentActions (D:\\RP\\AutoGPT\\tests\\pages\\library.page.ts:450:26)\u001b[22m\n\u001b[2m    at LibraryPage.deleteAgent (D:\\RP\\AutoGPT\\tests\\pages\\library.page.ts:543:5)\u001b[22m\n\u001b[2m    at D:\\RP\\AutoGPT\\tests\\feature_delete_agent\\delete-agent.spec.ts:521:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "📖 Loading user pool from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "✅ Successfully loaded 11 users from: D:\\RP\\.auth\\user-pool.json\n"
+                        },
+                        {
+                          "text": "📅 User pool created at: 2026-02-08T17:57:36.223Z\n"
+                        },
+                        {
+                          "text": "🔖 User pool version: 1.0.0\n"
+                        },
+                        {
+                          "text": "ℹ️ Attempting login on http://localhost:3000/login with { email: \u001b[32m'Elias49@gmail.com'\u001b[39m, password: \u001b[32m'S8XbfeZdmmIo'\u001b[39m }\n"
+                        },
+                        {
+                          "text": "🖱️ Clicking login button...\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for navigation away from /login ...\n"
+                        },
+                        {
+                          "text": "⌛ Post-login redirected to http://localhost:3000/marketplace\n"
+                        },
+                        {
+                          "text": "✅ Already at /marketplace\n"
+                        },
+                        {
+                          "text": "✅ Login process complete\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/build\n"
+                        },
+                        {
+                          "text": "closing tutorial\n"
+                        },
+                        {
+                          "text": "💾 Saving agent 'TC010-Agent-1771428984143' with description 'Agent for delete testing'\n"
+                        },
+                        {
+                          "text": "ℹ️ Now at URL: http://localhost:3000/library\n"
+                        },
+                        {
+                          "text": "checking if library page is loaded\n"
+                        },
+                        {
+                          "text": "Library page is loaded successfully\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC010-Agent-1771428984143\n"
+                        },
+                        {
+                          "text": "clicking Delete agent menu item\n"
+                        },
+                        {
+                          "text": "cancelling agent deletion\n"
+                        },
+                        {
+                          "text": "deleting agent: TC010-Agent-1771428984143\n"
+                        },
+                        {
+                          "text": "opening actions menu for agent: TC010-Agent-1771428984143\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-18T15:36:22.202Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "D:\\RP\\test-results\\delete-agent-delete-agent--45851--an-agent-with-confirmation-chromium\\test-failed-1.png"
+                          "path": "D:\\RP\\test-results\\feature_delete_agent-delet-24524--is-shown-but-not-confirmed-chromium\\test-failed-1.png"
                         },
                         {
                           "name": "error-context",
                           "contentType": "text/markdown",
-                          "path": "D:\\RP\\test-results\\delete-agent-delete-agent--45851--an-agent-with-confirmation-chromium\\error-context.md"
+                          "path": "D:\\RP\\test-results\\feature_delete_agent-delet-24524--is-shown-but-not-confirmed-chromium\\error-context.md"
                         }
-                      ],
-                      "errorLocation": {
-                        "file": "D:\\RP\\AutoGPT\\tests\\pages\\monitor.page.ts",
-                        "column": 13,
-                        "line": 435
-                      }
+                      ]
                     }
                   ],
                   "status": "unexpected"
                 }
               ],
-              "id": "aaf4b83015d900ffabdd-202792f5a7e23a109a2a",
-              "file": "delete-agent/delete-agent.spec.ts",
-              "line": 46,
+              "id": "20874ac064ae8a2095a5-dae99f8f15fd4f4bd18b",
+              "file": "feature_delete_agent/delete-agent.spec.ts",
+              "line": 488,
               "column": 7
             }
           ]
@@ -228,9 +1036,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-02-11T21:06:51.736Z",
-    "duration": 28066.72399999993,
-    "expected": 0,
+    "startTime": "2026-02-18T15:35:20.264Z",
+    "duration": 87128.03899999987,
+    "expected": 9,
     "skipped": 0,
     "unexpected": 1,
     "flaky": 0

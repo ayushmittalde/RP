@@ -26,6 +26,19 @@ export class LibraryPage extends BasePage {
         timeout: 10_000,
       });
 
+      // Wait for agent count badge to appear
+      await this.page.waitForSelector('[data-testid="agents-count"]', {
+        state: "visible",
+        timeout: 10_000,
+      });
+
+      // Wait for agent cards OR empty state (count stable after spinner gone)
+      // Poll until the agents-count badge no longer reflects a loading/"0" transient
+      // by waiting for any agent card to appear OR by waiting for networkidle
+      await this.page
+        .waitForLoadState("networkidle", { timeout: 10_000 })
+        .catch(() => {});
+
       console.log("Library page is loaded successfully");
       return true;
     } catch (error) {
@@ -420,6 +433,141 @@ export class LibraryPage extends BasePage {
   async isPaginationWorking(): Promise<boolean> {
     const newAgentsLoaded = await this.scrollAndWaitForNewAgents();
     return newAgentsLoaded > 0;
+  }
+
+  // ─── Delete Agent Methods (Empirically Verified) ───────────────────────────
+
+  /**
+   * Open the "More actions" dropdown for a specific agent card.
+   * Empirically verified: button role="button" name="More actions" on library-agent-card
+   */
+  async openAgentActions(agentName: string): Promise<void> {
+    console.log(`opening actions menu for agent: ${agentName}`);
+    const { getId } = getSelectors(this.page);
+    const card = getId("library-agent-card").filter({ hasText: agentName });
+    await card.first().waitFor({ state: "visible", timeout: 10_000 });
+    const moreActionsBtn = card.first().getByRole("button", { name: "More actions" });
+    await moreActionsBtn.click();
+  }
+
+  /**
+   * Click the "Delete agent" menu item in the More actions dropdown.
+   * Empirically verified: menuitem "Delete agent" inside role="menu"
+   */
+  async clickDeleteAgentMenuItem(): Promise<void> {
+    console.log(`clicking Delete agent menu item`);
+    await this.page
+      .getByRole("menuitem", { name: "Delete agent" })
+      .waitFor({ state: "visible", timeout: 5_000 });
+    await this.page.getByRole("menuitem", { name: "Delete agent" }).click();
+  }
+
+  /**
+   * Verify the delete confirmation dialog is visible.
+   * Empirically verified: role="dialog" name="Delete agent"
+   * Message: "Are you sure you want to delete this agent? This action cannot be undone."
+   */
+  async isDeleteConfirmationDialogVisible(): Promise<boolean> {
+    console.log(`checking if delete confirmation dialog is visible`);
+    try {
+      const dialog = this.page.getByRole("dialog", { name: "Delete agent" });
+      return await dialog.isVisible({ timeout: 3_000 });
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Confirm deletion by clicking the "Delete Agent" button in the dialog.
+   * Empirically verified: role="button" name="Delete Agent"
+   */
+  async confirmDeleteAgent(): Promise<void> {
+    console.log(`confirming agent deletion`);
+    const dialog = this.page.getByRole("dialog", { name: "Delete agent" });
+    await dialog.waitFor({ state: "visible", timeout: 5_000 });
+    await this.page.getByRole("button", { name: "Delete Agent" }).click();
+    // Wait for dialog to close after deletion
+    await dialog.waitFor({ state: "hidden", timeout: 10_000 });
+  }
+
+  /**
+   * Cancel deletion by clicking the "Cancel" button in the dialog.
+   * Empirically verified: role="button" name="Cancel"
+   */
+  async cancelDeleteAgent(): Promise<void> {
+    console.log(`cancelling agent deletion`);
+    const dialog = this.page.getByRole("dialog", { name: "Delete agent" });
+    await dialog.waitFor({ state: "visible", timeout: 5_000 });
+    await this.page.getByRole("button", { name: "Cancel" }).click();
+    // Wait for dialog to close
+    await dialog.waitFor({ state: "hidden", timeout: 5_000 });
+    // Wait for Radix to remove all portals, overlays, and inert attributes
+    await this.page
+      .waitForFunction(
+        () => {
+          // Check there are no Radix dialog overlays left
+          const overlay = document.querySelector("[data-radix-dialog-overlay]");
+          // Check body doesn't have inert attribute (Radix sets it during dialog)
+          const bodyInert = document.body.hasAttribute("inert");
+          // Check no Radix portals with content remain
+          const portals = document.querySelectorAll("[data-radix-popper-content-wrapper]");
+          return !overlay && !bodyInert && portals.length === 0;
+        },
+        { timeout: 5_000 },
+      )
+      .catch(() => {});
+    await this.page.waitForTimeout(300);
+  }
+
+  /**
+   * Close deletion dialog using the X (Close) button.
+   * Empirically verified: role="button" name="Close" inside the dialog
+   */
+  async closeDeleteDialogWithX(): Promise<void> {
+    console.log(`closing delete dialog with X button`);
+    const dialog = this.page.getByRole("dialog", { name: "Delete agent" });
+    await dialog.waitFor({ state: "visible", timeout: 5_000 });
+    await this.page.getByRole("button", { name: "Close" }).click();
+    await dialog.waitFor({ state: "hidden", timeout: 5_000 });
+    // Dismiss any lingering Radix dropdown overlay
+    await this.page.keyboard.press("Escape");
+    await this.page.waitForTimeout(300);
+  }
+
+  /**
+   * Full delete agent flow: opens actions, clicks delete, confirms.
+   * @param agentName - the name of the agent to delete
+   */
+  async deleteAgent(agentName: string): Promise<void> {
+    console.log(`deleting agent: ${agentName}`);
+    await this.openAgentActions(agentName);
+    await this.clickDeleteAgentMenuItem();
+    await this.confirmDeleteAgent();
+  }
+
+  /**
+   * Check whether an agent with a given name exists in the library.
+   * Waits up to 15s for the card to appear (handles async list loading).
+   */
+  async agentExists(agentName: string): Promise<boolean> {
+    console.log(`checking if agent exists: ${agentName}`);
+    const { getId } = getSelectors(this.page);
+    const card = getId("library-agent-card").filter({ hasText: agentName });
+    try {
+      await card.first().waitFor({ state: "visible", timeout: 15_000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Get the text content of the agents-count badge.
+   * Empirically verified: data-testid="agents-count"
+   */
+  async getAgentCountText(): Promise<string> {
+    const { getId } = getSelectors(this.page);
+    return (await getId("agents-count").textContent()) || "0";
   }
 }
 

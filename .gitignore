@@ -6,3 +6,5 @@ node_modules/
 /playwright/.auth/
 /report
 .github/skills
+.playwright-cli/
+.playwright-mcp/
