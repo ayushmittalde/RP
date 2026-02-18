@@ -1,10 +1,10 @@
 ---
 name: documentation-to-decision
-description: Use this prompt when you need to analyze documentation and  decide which representation is best suited for creating a comprehensive web test plan.
+description: Final-1: Use this prompt when you need to analyze documentation and  decide which representation is best suited for creating a comprehensive web test plan.
 tools:
   ['read/problems', 'read/readFile', 'edit', 'search', 'web', 'agent', 'todo']
 agent: agent
-argument-hint: Provide the documentation using Add Context
+argument-hint: Final-1: Provide the documentation using Add Context
 ---
 
 You are acting as a Senior QA Architect and Software Requirements Engineer.

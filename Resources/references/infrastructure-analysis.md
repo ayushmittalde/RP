@@ -1,7 +1,8 @@
-# Infrastructure Analysis - Delete Agent Test Suite
+# Infrastructure Analysis — AutoGPT Test Suite
 
-**Analysis Date**: February 8, 2026  
-**Purpose**: Document existing test infrastructure to ensure generated tests align with established patterns
+**Analysis Date**: February 18, 2026  
+**Purpose**: Document existing test infrastructure to ensure generated tests align with established patterns  
+**Previous Analysis**: February 11, 2026 (superseded)
 
 ---
 
@@ -10,19 +11,41 @@
 ### 1.1 Test Directory Structure
 ```
 AutoGPT/tests/
-├── *.spec.ts (test files)
-├── pages/ (Page Object Models)
-├── utils/ (helper utilities)
-├── credentials/ (test user data)
-├── assets/ (test assets)
-├── integrations/ (integration helpers)
-├── global-setup.ts (global test setup)
-└── delete-agent/ (empty - to be populated)
+├── *.spec.ts                   (root-level test files)
+├── pages/                      (Page Object Models)
+│   ├── base.page.ts
+│   ├── build.page.ts
+│   ├── header.page.ts
+│   ├── library.page.ts
+│   ├── login.page.ts
+│   ├── marketplace.page.ts
+│   ├── monitor.page.ts
+│   ├── navbar.page.ts
+│   ├── profile-form.page.ts
+│   └── profile.page.ts
+├── utils/                      (helper utilities)
+│   ├── assertion.ts
+│   ├── auth.ts
+│   ├── get-browser.ts
+│   ├── selectors.ts
+│   ├── signin.ts
+│   └── signup.ts
+├── credentials/
+│   └── index.ts                (TEST_CREDENTIALS + getTestUserWithLibraryAgents)
+├── assets/                     (test assets)
+├── integrations/               (integration helpers)
+├── global-setup.ts             (global test setup — creates user pool)
+├── feature_delete_agent/       (delete agent feature tests)
+│   ├── delete-agent.spec.ts
+│   └── coverage-report.md
+└── feature_edit_agent/         (edit agent feature tests)
+    ├── edit-agent.spec.ts
+    └── coverage-report.md
 ```
 
 ### 1.2 Test File Naming Convention
 - Pattern: `<feature-name>.spec.ts`
-- Examples: `monitor.spec.ts`, `library.spec.ts`, `build.spec.ts`
+- Feature directories: `feature_<feature_name>/`
 - TypeScript ONLY (`.ts` extension)
 
 ---
@@ -31,19 +54,21 @@ AutoGPT/tests/
 
 ### 2.1 Standard Test Imports
 ```typescript
-import test, { expect, TestInfo } from "@playwright/test";
-import { LoginPage } from "./pages/login.page";
-import { MonitorPage } from "./pages/monitor.page"; // or relevant page
-import { getTestUser } from "./utils/auth";
-import { hasUrl } from "./utils/assertion";
-import { getSelectors } from "./utils/selectors";
+import test, { expect, BrowserContext, Page } from "@playwright/test";
+import { LoginPage } from "../pages/login.page";
+import { LibraryPage } from "../pages/library.page";
+import { BuildPage } from "../pages/build.page";
+import { MonitorPage } from "../pages/monitor.page";
+import { getTestUser } from "../utils/auth";
+import { hasUrl } from "../utils/assertion";
+import { getSelectors } from "../utils/selectors";
 ```
 
 ### 2.2 Critical Rules
-- **NEVER** use `page.locator()` directly
+- **NEVER** use `page.locator()` directly in test assertions
 - **ALWAYS** use `getSelectors(page)` for element selection
 - **ALWAYS** use Page Object Methods for interactions
-- Import from relative paths: `./pages/`, `./utils/`
+- Import from relative paths: `../pages/`, `../utils/`
 
 ---
 
@@ -51,40 +76,39 @@ import { getSelectors } from "./utils/selectors";
 
 ### 3.1 getSelectors() API
 ```typescript
-const { getId, getButton, getText, getRole } = getSelectors(page);
+const { getId, getButton, getText, getRole, getLink } = getSelectors(page);
 
 // Examples:
-getId("monitor-page")           // Get by test-id
-getButton("Yes, delete")        // Get button by name
-getText("Are you sure")         // Get text element
-getRole("button", "Cancel")     // Get by role and name
+getId("library-agent-card")         // Get by data-testid
+getButton("More actions")           // Get button by name  
+getText("Are you sure")             // Get text element
+getRole("menuitem", "Edit agent")   // Get by role and name
 ```
 
 ### 3.2 Available Selector Methods
-- `getId(testid)` - Get by data-testid
-- `getButton(name)` - Get button by accessible name
-- `getText(name)` - Get by text content
-- `getLink(name)` - Get link by name
-- `getField(name)` - Get form field by label
-- `getRole(role, name, options)` - Get by ARIA role
+- `getId(testid)` — Get by data-testid (exact or regex)
+- `getButton(name)` — Get button by accessible name
+- `getText(name)` — Get by text content
+- `getLink(name)` — Get link by name
+- `getField(name)` — Get form field by label
+- `getRole(role, name, options)` — Get by ARIA role
 
 ### 3.3 Forbidden Patterns
 ❌ `page.locator(".class")`  
 ❌ `page.locator("#id")`  
 ❌ `page.locator("button")`  
-✅ `getSelectors(page).getButton("Button Name")`
+✅ `getSelectors(page).getButton("Button Name")`  
+✅ `getSelectors(page).getId("data-testid")`
 
 ---
 
-## 4. Page Object Model (POM) Architecture
+## 4. Page Object Model Architecture
 
 ### 4.1 BasePage Structure
-All Page Objects extend `BasePage`:
 ```typescript
 export class BasePage {
   readonly navbar: NavBar;
   readonly downloadsFolder = "./.test-contents";
-  
   constructor(protected page: Page) {
     this.navbar = new NavBar(page);
   }
@@ -92,27 +116,41 @@ export class BasePage {
 ```
 
 ### 4.2 Existing Page Objects
-- `LoginPage` - Authentication
-- `MonitorPage` - Monitor Tab interactions
-- `LibraryPage` - Library page interactions
-- `BuildPage` - Build page interactions
-- `NavBar` - Navigation component
-- `MarketplacePage` - Marketplace interactions
 
-### 4.3 MonitorPage Current Methods
-```typescript
-class MonitorPage extends BasePage {
-  async isLoaded(): Promise<boolean>
-  async listAgents(): Promise<Agent[]>
-  async listRuns(filter?: Agent): Promise<Run[]>
-  async clickAgent(id: string): Promise<void>
-  async importFromFile(...): Promise<void>
-  async exportToFile(agent: Agent): Promise<void>
-  async deleteAgent(agent: Agent): Promise<void> // ⚠️ STUB - NOT IMPLEMENTED
-}
-```
+#### LoginPage
+- `login(email, password)` — standard login
 
-**CRITICAL FINDING**: `MonitorPage.deleteAgent()` exists but is **EMPTY** - only logs to console. This MUST be implemented.
+#### LibraryPage
+- `isLoaded()` — wait for library to be ready
+- `getAgents()` — returns `Agent[]` (id, name, description, seeRunsUrl, openInBuilderUrl)
+- `getAgentCount()` — badge number from `data-testid="agents-count"`
+- `agentExists(name)` — checks for card by name
+- `openAgentActions(agentName)` — clicks "More actions" on agent card
+- `clickDeleteAgentMenuItem()` — empirically verified
+- `confirmDeleteAgent()` / `cancelDeleteAgent()` — dialog buttons
+- `deleteAgent(agentName)` — full delete flow
+- **`clickEditAgentMenuItem()`** — "Edit agent" in More actions → NEW TAB (added 2026-02-18)
+- **`clickDuplicateAgentMenuItem()`** — "Duplicate agent" in More actions (added 2026-02-18)
+- **`clickOpenInBuilderLink(agentName)`** — direct "Open in builder" link → SAME TAB (added 2026-02-18)
+- **`getOpenInBuilderHref(agentName)`** — returns href from Open in builder link (added 2026-02-18)
+- **`isEditAgentMenuItemVisible()`** — checks if Edit agent menuitem is visible (added 2026-02-18)
+- **`isDuplicateAgentMenuItemVisible()`** — checks if Duplicate agent menuitem visible (added 2026-02-18)
+- `clickOpenInBuilder(agent)` — older method using Agent object
+
+#### BuildPage
+- `closeTutorial()` — dismisses tutorial dialog
+- `saveAgent(name, description)` — clicks save, fills dialog, saves
+- `createDummyAgent()` — creates minimal agent with a Dictionary block
+- `addBlock(block)` — adds a block to the canvas
+- `getBlocksFromAPI()` — fetches available blocks from API
+
+#### MonitorPage
+- `isLoaded()`, `listAgents()`, `clickAgent(id)`, `deleteAgent(agent, confirm)`
+- `ensureAgentExists(name?)`, `ensureExactAgentCount(count)`, `ensureZeroAgents()`
+- **⚠️ WARNING**: Clicking an agent in Monitor Tab causes an ERROR PAGE. Do NOT navigate to agent detail from Monitor Tab.
+
+#### NavBar
+- `clickBuildLink()`, `clickLibraryLink()`, `clickMarketplaceLink()`
 
 ---
 
@@ -122,24 +160,26 @@ class MonitorPage extends BasePage {
 ```typescript
 test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
-  const testUser = await getTestUser(); // Gets user from pool
+  const testUser = await getTestUser();
+  
+  await page.addInitScript(() => {
+    window.localStorage.setItem("autogpt_cookie_consent",
+      JSON.stringify({ hasConsented: true, timestamp: Date.now(), analytics: true, monitoring: true }));
+  });
   
   await page.goto("/login");
   await loginPage.login(testUser.email, testUser.password);
-  await hasUrl(page, "/marketplace");
+  await hasUrl(page, /\/(marketplace|library|onboarding.*)?/);
 });
 ```
 
 ### 5.2 Authentication Utilities
-- `getTestUser()` - Gets test user from pre-created pool
-- `createTestUser()` - Creates new test user
-- `getTestUserWithLibraryAgents()` - Gets user with existing library agents
+- `getTestUser()` — Gets next test user from pool at `.auth/user-pool.json`
+- `createTestUser()` — Creates new test user
+- `getTestUserWithLibraryAgents()` — Gets specific user from `credentials/index.ts`
 
-### 5.3 Global Setup
-- `global-setup.ts` creates user pool before tests
-- Workers = N users + 8 buffer
-- User pool persisted across test runs
-- Auto-accept cookies via localStorage
+### 5.3 User Pool Location
+- `d:\RP\.auth\user-pool.json` (11 users as of Feb 2026)
 
 ---
 
@@ -150,300 +190,140 @@ test.beforeEach(async ({ page }) => {
 test.describe("Feature Name", () => {
   let featurePage: FeaturePage;
   
-  test.beforeEach(async ({ page }) => {
-    // ARRANGE: Authentication
-    const loginPage = new LoginPage(page);
-    const testUser = await getTestUser();
-    
-    featurePage = new FeaturePage(page);
-    
-    await page.goto("/login");
-    await loginPage.login(testUser.email, testUser.password);
-    await hasUrl(page, "/marketplace");
-    
-    // ARRANGE: Navigate to feature
-    await page.goto("/feature-url");
-    await featurePage.isLoaded();
-  });
+  test.beforeEach(async ({ page }) => { /* auth */ });
   
-  test("test name", async ({ page }) => {
-    // ARRANGE: Setup test state
-    
-    // ACT: Perform action
-    
-    // ASSERT: Verify outcome
+  /**
+   * Test Case ID: TC-###
+   * Covered Requirements: FR-1, FR-2
+   * Test Type: Happy Path | Negative | Edge Case
+   * Preconditions Established: State creation method
+   */
+  test("TC-###: description", async ({ page, context }) => {
+    // ARRANGE — ACT — ASSERT
   });
 });
 ```
 
-### 6.2 Test Metadata (REQUIRED)
-Every test MUST include metadata comment:
+### 6.2 New Tab Handling Pattern (CRITICAL)
+When an action opens a new browser tab:
 ```typescript
-/**
- * Test Case ID: TC-###
- * Covered Requirements: FR-1, FR-2, NFR-1
- * Test Type: Happy Path | Negative | Edge Case
- * Source Artifacts: Gherkin Scenario S#
- * Assumptions: User exists, authenticated
- * Preconditions Established: Agent created via API/UI
- */
-test("test description", async ({ page }) => {
-  // test body
-});
+const newPagePromise = context.waitForEvent("page");
+await libraryPage.clickEditAgentMenuItem(); // opens new tab
+const builderPage = await newPagePromise;
+await builderPage.waitForLoadState("domcontentloaded");
+// ... assertions on builderPage ...
+await builderPage.close(); // prevent tab leaks
 ```
 
----
-
-## 7. Assertion Patterns
-
-### 7.1 Playwright Assertions
+### 6.3 Agent Creation Helper
 ```typescript
-import { expect } from "@playwright/test";
-
-await expect(element).toBeVisible();
-await expect(element).toHaveText("Expected text");
-await expect(element).toBeAttached();
-await expect(page).toHaveURL(/pattern/);
-```
-
-### 7.2 Custom Assertions
-```typescript
-import { hasUrl } from "./utils/assertion";
-
-await hasUrl(page, "/expected-path");
-```
-
----
-
-## 8. State Management Patterns
-
-### 8.1 Observed State Creation Strategies
-
-#### Via API (Preferred)
-```typescript
-// Example from monitor.spec.ts - using API indirectly
-const response = await page.request.get("http://localhost:3000/api/proxy/api/blocks");
-const data = await response.json();
-```
-
-#### Via UI Navigation
-```typescript
-// Example from library.spec.ts
-await page.goto("/library");
-await libraryPage.isLoaded();
-const agents = await libraryPage.getAgents();
-```
-
-#### Via Page Object Methods
-```typescript
-// Example from monitor.spec.ts
-await navigateToLibrary(page);
-await clickFirstAgent(page);
-await runAgent(page);
-```
-
-### 8.2 State Helper Functions
-Located in page objects or utils:
-- `navigateToLibrary(page)` - Navigate to library
-- `clickFirstAgent(page)` - Select first agent
-- `runAgent(page)` - Run selected agent
-- `waitForAgentPageLoad(page)` - Wait for agent page
-
----
-
-## 9. Wait Strategies (CRITICAL)
-
-### 9.1 Deterministic Waits (PREFERRED)
-```typescript
-// Wait for element
-await element.waitFor({ state: "visible", timeout: 10_000 });
-
-// Wait for URL
-await page.waitForURL(/pattern/);
-
-// Wait for load state
-await page.waitForLoadState("domcontentloaded");
-
-// Wait for network idle
-await page.waitForLoadState("networkidle");
-```
-
-### 9.2 Forbidden Waits
-❌ `await page.waitForTimeout(1000)` - Arbitrary waits  
-✅ Use `.waitFor()` with specific conditions
-
-### 9.3 Exception: Short Debounce
-`await page.waitForTimeout(500)` - Only for debouncing search/filter inputs (observed in existing tests)
-
----
-
-## 10. Configuration & Setup
-
-### 10.1 Playwright Config Key Settings
-- Test directory: `./AutoGPT/tests`
-- Base URL: `http://localhost:3000/`
-- Timeout: 25000ms (default)
-- Global setup: `./AutoGPT/tests/global-setup.ts`
-- Parallel execution: `fullyParallel: true`
-- Browser: Chromium only
-
-### 10.2 Auto-Accept Cookies
-All tests auto-accept cookies via `storageState`:
-```typescript
-localStorage: [{
-  name: "autogpt_cookie_consent",
-  value: JSON.stringify({
-    hasConsented: true,
-    timestamp: Date.now(),
-    analytics: true,
-    monitoring: true,
-  })
-}]
-```
-
----
-
-## 11. Delete Agent Specific Findings
-
-### 11.1 Current Monitor Page State
-- `MonitorPage.deleteAgent(agent)` method exists but is **EMPTY**
-- Only contains: `console.log(\`deleting agent ${agent.id} ${agent.name}\`)`
-- **MUST BE IMPLEMENTED** for tests to work
-
-### 11.2 Required Implementation
-The `deleteAgent()` method needs to:
-1. Click the agent row (select agent)
-2. Locate trash icon
-3. Click trash icon
-4. Handle confirmation dialog
-5. Confirm deletion
-
-### 11.3 Agent Interface
-```typescript
-interface Agent {
-  id: string;
-  name: string;
-  runCount: number;
-  lastRun: string;
+async function createTestAgent(page: Page, name: string, desc = "..."): Promise<string> {
+  await page.goto("/build");
+  await page.waitForLoadState("domcontentloaded");
+  const buildPage = new BuildPage(page);
+  await buildPage.closeTutorial();
+  await buildPage.saveAgent(name, desc);
+  await page.waitForURL(/\/build\?flowID=/, { timeout: 15_000 });
+  return name;
 }
 ```
 
-### 11.4 Existing Monitor Tab Selectors
-From code analysis:
-- `data-testid="monitor-page"` - Monitor page container
-- `data-testid="{agent.id}"` - Agent row (e.g., "flow-run-123")
-- Table structure: `<thead>`, `<tbody>`, `<tr data-testid="...">`, `<td>`
-- `data-name` attribute on rows contains agent name
+---
 
-### 11.5 Missing Information (REQUIRES DISCOVERY)
-❓ Trash icon selector (test-id or role?)  
-❓ Confirmation dialog selectors  
-❓ "Yes, delete" button selector  
-❓ Cancel button selector  
+## 7. Key Application Selectors (Empirically Verified Feb 18, 2026)
 
-**ACTION REQUIRED**: Inspect UI or source code to find these selectors before implementing tests.
+### 7.1 Library Page (`/library`)
+| Element | Selector Strategy |
+|---------|------------------|
+| Agent card | `data-testid="library-agent-card"` |
+| Agent name heading | `heading [level=5]` within card |
+| More actions button | `role="button" name="More actions"` within card |
+| Edit agent menuitem | `role="menuitem" name="Edit agent"` |
+| Duplicate agent menuitem | `role="menuitem" name="Duplicate agent"` |
+| Delete agent menuitem | `role="menuitem" name="Delete agent"` |
+| Open in builder link | `data-testid="library-agent-card-open-in-builder-link"` |
+| See runs link | `data-testid="library-agent-card-see-runs-link"` |
+| Agent count badge | `data-testid="agents-count"` |
+
+### 7.2 Agent Detail Page (`/library/agents/<id>`)
+| Element | Selector Strategy |
+|---------|------------------|
+| Edit agent button | `role="button" name="Edit agent"` (contains link, opens NEW TAB) |
+| Export agent | `role="button" name="Export agent to file"` |
+| Delete agent | `role="button" name="Delete agent"` |
+
+### 7.3 Builder (`/build?flowID=<id>&flowVersion=<n>`)
+| Element | Selector Strategy |
+|---------|------------------|
+| Save button | `data-testid="blocks-control-save-button"` |
+| Name input | `data-testid="save-control-name-input"` (pre-fills existing name) |
+| Description input | `data-testid="save-control-description-input"` (pre-fills existing desc) |
+| Save dialog button | `data-testid="save-control-save-agent-button"` |
+| Tutorial skip | `role="button" name="Skip Tutorial"` |
+
+### 7.4 Delete Confirmation Dialog
+| Element | Selector Strategy |
+|---------|------------------|
+| Dialog | `role="dialog" name="Delete agent"` |
+| Confirm | `role="button" name="Delete Agent"` |
+| Cancel | `role="button" name="Cancel"` |
+| Close X | `role="button" name="Close"` |
 
 ---
 
-## 12. Test Execution & Validation
+## 8. Application Entry Points
 
-### 12.1 List Tests Command
+| Route | Description | Notes |
+|-------|-------------|-------|
+| `/login` | Login page | |
+| `/marketplace` | Post-login redirect | |
+| `/library` | Library page | Redirects to `?sort=updatedAt` |
+| `/library/agents/<id>` | Agent detail | Redirects to `?activeTab=runs` |
+| `/build` | New agent | Tutorial dialog on first load |
+| `/build?flowID=<uuid>` | Edit agent (Open in builder) | No flowVersion |
+| `/build?flowID=<uuid>&flowVersion=<n>` | Edit agent (Edit action) | With version |
+| `/monitoring` | Monitor Tab | ⚠️ Agent click causes error page |
+
+---
+
+## 9. Discovered Application Behaviors (Empirical, Feb 18 2026)
+
+| Behavior | Details |
+|----------|---------|
+| "Edit agent" (More actions) | Opens NEW TAB with builder at `/build?flowID=<id>&flowVersion=<n>` |
+| "Edit agent" (detail page) | Opens NEW TAB with builder at `/build?flowID=<id>&flowVersion=<n>` |
+| "Open in builder" (card link) | Navigates SAME TAB to `/build?flowID=<id>` |
+| Save increments flowVersion | After save: `flowVersion=1` → `flowVersion=2` |
+| Save dialog pre-fills | Name + description filled from persisted agent data |
+| Monitor Tab agent click | ERROR PAGE — "Something went wrong" (broken) |
+| Post-login redirect | URL becomes `/marketplace` |
+| Library sort param | `?sort=updatedAt` appended automatically |
+
+---
+
+## 10. Configuration
+
+### 10.1 Playwright Config
+- Test dir: `./AutoGPT/tests`
+- Base URL: `http://localhost:3000/`
+- Timeout: 25000ms
+- Global setup: `./AutoGPT/tests/global-setup.ts`
+- Parallel: `fullyParallel: true`
+- Browser: Chromium only
+
+### 10.2 Validation Command
 ```bash
 npx playwright test --list
 ```
-Must pass without errors after test creation.
-
-### 12.2 Run Specific Test File
-```bash
-npx playwright test delete-agent.spec.ts
-```
-
-### 12.3 Run Single Test
-```bash
-npx playwright test -g "test name pattern"
-```
 
 ---
 
-## 13. Infrastructure Alignment Checklist
+## 11. Generated Test Suites
 
-For generated tests to be valid, they MUST:
-
-- ✅ Use TypeScript (.spec.ts)
-- ✅ Import from @playwright/test
-- ✅ Use getSelectors() - NEVER page.locator()
-- ✅ Use Page Object Methods
-- ✅ Extend or create Page Objects as needed
-- ✅ Use getTestUser() for auth
-- ✅ Follow ARRANGE → ACT → ASSERT
-- ✅ Include test metadata comments
-- ✅ Use deterministic waits
-- ✅ Navigate via page.goto() or Page Object methods
-- ✅ Place in correct directory structure
-- ✅ Verify imports resolve (npx playwright test --list)
-
----
-
-## 14. Recommendations for Delete Agent Tests
-
-### 14.1 File Location
-Create: `AutoGPT/tests/delete-agent.spec.ts`
-
-### 14.2 Required Page Object Updates
-Extend `MonitorPage` to implement:
-```typescript
-async deleteAgent(agent: Agent, confirm: boolean = true): Promise<void>
-async ensureAgentExists(agentName: string): Promise<Agent>
-async clickTrashIcon(agent: Agent): Promise<void>
-async confirmDeletion(): Promise<void>
-async cancelDeletion(): Promise<void>
-async hasDeleteConfirmationDialog(): Promise<boolean>
-```
-
-### 14.3 State Creation Strategy
-**Preferred**: Create test agent via API or existing helper  
-**Fallback**: Import agent from file using `MonitorPage.importFromFile()`  
-**Last Resort**: Navigate to build and create simple agent  
-
-### 14.4 Selector Discovery Required
-Before implementing tests, discover:
-1. Trash icon selector (inspect element)
-2. Confirmation dialog selectors
-3. Button selectors within dialog
-
----
-
-## 15. Gaps & Risks
-
-### 15.1 Implementation Gaps
-- ❌ `MonitorPage.deleteAgent()` not implemented
-- ❌ No trash icon selector documented
-- ❌ No confirmation dialog selectors documented
-- ❌ No agent creation helper in MonitorPage
-
-### 15.2 Risks
-- **HIGH**: Tests cannot run until `deleteAgent()` implemented
-- **MEDIUM**: Unknown selectors may require UI inspection
-- **LOW**: Agent creation strategy needs definition
-
-### 15.3 Assumptions to Validate
-- Trash icon has data-testid or accessible role
-- Confirmation dialog has accessible role
-- Buttons have accessible names or test-ids
-- Agent deletion is instant (no loading states)
-
----
-
-## 16. Next Steps
-
-1. ✅ Infrastructure analysis complete
-2. ⏭️ Proceed to Phase 1: Scenario Extraction
-3. ⏭️ Phase 2: State Dependency Analysis
-4. ⏭️ Phase 3: Precondition Strategy
-5. ⏭️ Phase 4: Feasibility Gate
-6. ⏭️ Phase 5: Implement tests + extend MonitorPage
-
-**BLOCKER**: Before Phase 5, must discover missing selectors via UI inspection or source code review.
+| Suite | Location | Last Updated |
+|-------|----------|-------------|
+| Delete Agent | `feature_delete_agent/delete-agent.spec.ts` | Feb 18, 2026 |
+| Edit Agent | `feature_edit_agent/edit-agent.spec.ts` | Feb 18, 2026 |
 
 ---
 

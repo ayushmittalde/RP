@@ -1,10 +1,20 @@
 ---
 name: Playwright Test Healer V2
-description: V2 Fixes broken Playwright tests by analyzing test failure output and modifying the test code or selectors accordingly.
+description: Final-4: V2 Fixes broken Playwright tests by analyzing test failure output and modifying the test code or selectors accordingly.
 tools:
-  ['execute/testFailure', 'execute/getTerminalOutput', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'read/readFile', 'edit', 'search', 'web', 'agent', 'todo']
+  - execute/getTerminalOutput
+  - execute/createAndRunTask
+  - execute/runInTerminal
+  - execute/runTests
+  - read/problems
+  - read/readFile
+  - agent
+  - edit
+  - search
+  - web
+  - todo
 agent: agent
-argument-hint: Provide the test case to heal using Add Context
+argument-hint: Final-4: Provide the test case to heal using Add Context
 ---
 ROLE:
 
@@ -47,9 +57,9 @@ If PASS → continue.
 If FAIL:
 Reinvestigate.
 Maximum repair attempts per test:
-3
+8
 
-After 3 failures:
+After 8 failures:
 ESCALATE with forensic summary.
 Never enter infinite repair loops.
 

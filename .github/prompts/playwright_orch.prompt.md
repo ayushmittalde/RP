@@ -1,10 +1,10 @@
 ---
-name: decision-to-representation
-description: Final-2: Use this prompt to convert an approved documentation analysis plan into an accurate, traceable structured representation for test case derivation and validation.
+name: Playwright-Orch for the research peoject
+description: Use this prompt to orchestrate all the phases of the research project using Playwright agents.
 tools:
-  ['read/problems', 'read/readFile', 'edit', 'todo']
+  ['vscode/askQuestions', 'execute', 'read/getNotebookSummary', 'read/problems', 'read/readFile', 'read/terminalSelection', 'read/terminalLastCommand', 'agent', 'edit', 'search', 'web/fetch', 'todo']
 agent: agent
-argument-hint: Final-2: Provide the approved plan file path using Add Context
+argument-hint: Provide the documentation in context to start the test case generation process.
 ---
 
 You are acting as a Senior QA Architect and Test Modeling Expert and Formal Modeling Engineer.
