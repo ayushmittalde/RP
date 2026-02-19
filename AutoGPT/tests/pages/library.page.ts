@@ -545,6 +545,96 @@ export class LibraryPage extends BasePage {
     await this.confirmDeleteAgent();
   }
 
+  // ─── Edit Agent Methods (Empirically Verified 2026-02-18) ─────────────────
+
+  /**
+   * Click the "Edit agent" menu item in the More actions dropdown.
+   * Empirically verified: menuitem "Edit agent" inside role="menu" name="More actions"
+   * IMPORTANT: This action opens a NEW TAB with the builder loaded.
+   */
+  async clickEditAgentMenuItem(): Promise<void> {
+    console.log(`clicking Edit agent menu item`);
+    await this.page
+      .getByRole("menuitem", { name: "Edit agent" })
+      .waitFor({ state: "visible", timeout: 5_000 });
+    await this.page.getByRole("menuitem", { name: "Edit agent" }).click();
+  }
+
+  /**
+   * Click the "Duplicate agent" menu item in the More actions dropdown.
+   * Empirically verified: menuitem "Duplicate agent" inside role="menu".
+   */
+  async clickDuplicateAgentMenuItem(): Promise<void> {
+    console.log(`clicking Duplicate agent menu item`);
+    await this.page
+      .getByRole("menuitem", { name: "Duplicate agent" })
+      .waitFor({ state: "visible", timeout: 5_000 });
+    await this.page.getByRole("menuitem", { name: "Duplicate agent" }).click();
+  }
+
+  /**
+   * Click the "Open in builder" direct link on a library agent card.
+   * This navigates within the same tab (no new tab).
+   * Empirically verified: data-testid="library-agent-card-open-in-builder-link"
+   * URL pattern: /build?flowID=<uuid>
+   */
+  async clickOpenInBuilderLink(agentName: string): Promise<void> {
+    console.log(`clicking Open in builder link for agent: ${agentName}`);
+    const { getId } = getSelectors(this.page);
+    const agentCard = getId("library-agent-card").filter({ hasText: agentName });
+    await agentCard.first().waitFor({ state: "visible", timeout: 10_000 });
+    const builderLink = getId(
+      "library-agent-card-open-in-builder-link",
+      agentCard.first(),
+    );
+    await builderLink.waitFor({ state: "visible", timeout: 5_000 });
+    await builderLink.click();
+  }
+
+  /**
+   * Get the "Open in builder" href for a given agent card.
+   * Returns the URL string pointing to /build?flowID=<uuid>
+   */
+  async getOpenInBuilderHref(agentName: string): Promise<string> {
+    console.log(`getting Open in builder href for agent: ${agentName}`);
+    const { getId } = getSelectors(this.page);
+    const agentCard = getId("library-agent-card").filter({ hasText: agentName });
+    await agentCard.first().waitFor({ state: "visible", timeout: 10_000 });
+    const builderLink = getId(
+      "library-agent-card-open-in-builder-link",
+      agentCard.first(),
+    );
+    return (await builderLink.getAttribute("href")) ?? "";
+  }
+
+  /**
+   * Verify the "Edit agent" menu item is present in the More actions dropdown.
+   * Call openAgentActions() first to open the dropdown.
+   */
+  async isEditAgentMenuItemVisible(): Promise<boolean> {
+    console.log(`checking if Edit agent menu item is visible`);
+    try {
+      const item = this.page.getByRole("menuitem", { name: "Edit agent" });
+      return await item.isVisible({ timeout: 3_000 });
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Verify the "Duplicate agent" menu item is present in the More actions dropdown.
+   * Call openAgentActions() first to open the dropdown.
+   */
+  async isDuplicateAgentMenuItemVisible(): Promise<boolean> {
+    console.log(`checking if Duplicate agent menu item is visible`);
+    try {
+      const item = this.page.getByRole("menuitem", { name: "Duplicate agent" });
+      return await item.isVisible({ timeout: 3_000 });
+    } catch {
+      return false;
+    }
+  }
+
   /**
    * Check whether an agent with a given name exists in the library.
    * Waits up to 15s for the card to appear (handles async list loading).
