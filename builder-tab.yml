@@ -1,0 +1,70 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e3]:
+      - navigation [ref=e5]:
+        - generic [ref=e6]:
+          - link "Marketplace" [ref=e7] [cursor=pointer]:
+            - /url: /marketplace
+            - generic [ref=e8]:
+              - img [ref=e9]
+              - heading "Marketplace" [level=5] [ref=e11]
+          - link "Library" [ref=e12] [cursor=pointer]:
+            - /url: /library
+            - generic [ref=e13]:
+              - img [ref=e14]
+              - heading "Library" [level=5] [ref=e16]
+          - link "Build" [ref=e17] [cursor=pointer]:
+            - /url: /build
+            - generic [ref=e18]:
+              - img [ref=e19]
+              - heading "Build" [level=5] [ref=e21]
+        - img "Icon" [ref=e23]
+        - generic [ref=e34]:
+          - button "View Agent Activity" [ref=e35] [cursor=pointer]:
+            - img [ref=e36]
+          - button "Earn credits $1.00" [ref=e39] [cursor=pointer]:
+            - generic [ref=e40]:
+              - generic [ref=e41]: Earn credits
+              - text: $1.00
+          - button "Open profile menu" [ref=e43] [cursor=pointer]:
+            - img [ref=e46]
+      - application [ref=e53]:
+        - generic "Control Panel" [ref=e56]:
+          - button "Zoom In" [ref=e57] [cursor=pointer]:
+            - img [ref=e58]
+          - button "Zoom Out" [ref=e60] [cursor=pointer]:
+            - img [ref=e61]
+          - button "Fit View" [ref=e63] [cursor=pointer]:
+            - img [ref=e64]
+          - button "Toggle Interactivity" [ref=e66] [cursor=pointer]:
+            - img [ref=e67]
+        - img
+        - generic [ref=e71]:
+          - button "Icon" [ref=e72] [cursor=pointer]:
+            - img "Icon" [ref=e73]
+          - button "Icon Undo" [ref=e78] [cursor=pointer]:
+            - img "Icon" [ref=e79]
+            - generic [ref=e82]: Undo
+          - button "Icon Redo" [ref=e84] [cursor=pointer]:
+            - img "Icon" [ref=e85]
+            - generic [ref=e88]: Redo
+          - button "Icon" [ref=e89] [cursor=pointer]:
+            - img "Icon" [ref=e90]
+        - generic [ref=e95]:
+          - button "Agent Outputs" [ref=e96] [cursor=pointer]:
+            - img [ref=e97]
+            - text: Agent Outputs
+          - button "Run the agent" [ref=e100] [cursor=pointer]:
+            - img "Icon" [ref=e101]
+            - text: Run
+          - button "Schedule Run" [ref=e103] [cursor=pointer]:
+            - img [ref=e104]
+            - text: Schedule Run
+        - link "React Flow attribution" [ref=e107] [cursor=pointer]:
+          - /url: https://reactflow.dev
+          - text: React Flow
+    - generic [ref=e109]:
+      - button "Tutorial" [ref=e110] [cursor=pointer]
+      - button "Give Feedback" [ref=e111] [cursor=pointer]
+  - region "Notifications alt+T"
+  - alert [ref=e112]

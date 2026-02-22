@@ -1,8 +1,8 @@
 ---
 name: representation-to-test-V4
 description: Final-3: V4 Derive a deterministic, executable Playwright test suite from an approved structured representation document using empirical system exploration. Tests are grounded in captured playwright-cli generated code and verified by actual execution before delivery.
-tools:
-  ['execute/testFailure', 'execute/getTerminalOutput', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'read/readFile', 'agent', 'edit', 'search', 'web', 'playwright-test/*', 'todo']
+
+[execute, read/problems, read/readFile, agent, edit, search, web, todo]
 agent: agent
 argument-hint: Final-3: Provide the structured representation using Add Context V3
 ---
@@ -199,34 +199,22 @@ Every required state must be classified using:
 - If state is required → it MUST be created OR verified in code  
 - Never assume test data exists
 
-If a state cannot be established:
+If a state cannot be established even after exploration using `playwright-cli` or Playwright skill(.github\skills\playwright-cli\SKILL.md), the test is BLOCKED. Do NOT write code for blocked tests.
 > Mark the test BLOCKED — do NOT fabricate logic.
 
 Do not create any documention unless explicitly mentioned.
 
 ---
 
-## Phase 4 — Feasibility Gate (Preliminary)
-
-Before exploration, classify scenarios based on documentation analysis:
-
-- Likely Executable (proceed to exploration)
-- Risky (explore carefully)
-- Likely Blocked (document why, explore if time permits)
-
-Explain your reasoning.
-
-**Note:** This classification is PRELIMINARY. It will be updated after Phase 4.5 exploration.
-
-Do not create any documention unless explicitly mentioned.
-
----
-
-## Phase 5a — Live System Exploration & Evidence Collection (NO CODE YET)
+## Phase 4a — Live System Exploration & Evidence Collection (NO CODE YET)
 
 **CRITICAL RULE**: Explore first. Record everything. Write nothing.
 
+Use playwright skill to know more about `playwright-cli`, information about the skill is present at .github\skills\playwright-cli\SKILL.md. Do not use MCP server of anykind to explore the system. You must use `playwright-cli` directly in a terminal to interact with the actual system and capture evidence.
+
 For every scenario identified in Phases 1–4, run `playwright-cli` and collect the following into `Resources/references/exploration-evidence-<feature>.md`:
+
+You can also read about previous system exploration (completely unrealted to current feature test generation efforts) in `Resources/references/exploration-evidence*.md` for reference, but do not rely on it for selectors or assumptions.
 
 ### Code Bank (MANDATORY)
 Every `playwright-cli` action emits exact TypeScript. Capture it verbatim:
@@ -270,7 +258,7 @@ Explore using playwright-cli:
 
 ---
 
-## Phase 5b — Test Synthesis (FROM EVIDENCE ONLY)
+## Phase 4b — Test Synthesis (FROM EVIDENCE ONLY)
 
 **CRITICAL RULE**: Every line of test code must trace back to a captured entry in the Phase 5a evidence file. If it isn't in the evidence, it doesn't go in the test.
 
@@ -302,7 +290,7 @@ Explicitly list:
 
 No requirement may exist without a mapped test OR documented reason.
 
-# Phase 6 — Execution Gate (MANDATORY)
+# Phase 5 — Execution Gate (MANDATORY)
 ### Step 1 — Run the suite
 ```bash
 npx playwright test <spec-file-path> --reporter=list --project=chromium

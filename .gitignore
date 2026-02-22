@@ -8,3 +8,4 @@ node_modules/
 .github/skills
 .playwright-cli/
 .playwright-mcp/
+playwright-report/

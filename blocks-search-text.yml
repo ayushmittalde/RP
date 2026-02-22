@@ -1,0 +1,218 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e3]:
+      - navigation [ref=e91]:
+        - generic [ref=e92]:
+          - link "Marketplace" [ref=e93] [cursor=pointer]:
+            - /url: /marketplace
+            - generic [ref=e94]:
+              - img [ref=e95]
+              - heading "Marketplace" [level=5] [ref=e97]
+          - link "Library" [ref=e98] [cursor=pointer]:
+            - /url: /library
+            - generic [ref=e99]:
+              - img [ref=e100]
+              - heading "Library" [level=5] [ref=e102]
+          - link "Build" [ref=e103] [cursor=pointer]:
+            - /url: /build
+            - generic [ref=e104]:
+              - img [ref=e105]
+              - heading "Build" [level=5] [ref=e107]
+        - img "Icon" [ref=e109]
+        - generic [ref=e120]:
+          - button "View Agent Activity" [ref=e121] [cursor=pointer]:
+            - img [ref=e122]
+          - button "Earn credits $1.00" [ref=e125] [cursor=pointer]:
+            - generic [ref=e126]:
+              - generic [ref=e127]: Earn credits
+              - text: $1.00
+          - button "Open profile menu" [ref=e129] [cursor=pointer]:
+            - img [ref=e132]
+      - application [ref=e24]:
+        - generic "Control Panel" [ref=e27]:
+          - button "Zoom In" [ref=e28] [cursor=pointer]:
+            - img [ref=e29]
+          - button "Zoom Out" [ref=e31] [cursor=pointer]:
+            - img [ref=e32]
+          - button "Fit View" [ref=e34] [cursor=pointer]:
+            - img [ref=e35]
+          - button "Toggle Interactivity" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+        - img
+        - generic [ref=e42]:
+          - button "Icon" [expanded] [ref=e43] [cursor=pointer]:
+            - img "Icon" [ref=e44]
+          - button "Icon Undo" [ref=e49] [cursor=pointer]:
+            - img "Icon" [ref=e50]
+            - generic [ref=e53]: Undo
+          - button "Icon Redo" [ref=e55] [cursor=pointer]:
+            - img "Icon" [ref=e56]
+            - generic [ref=e59]: Redo
+          - button "Icon" [ref=e60] [cursor=pointer]:
+            - img "Icon" [ref=e61]
+        - generic [ref=e66]:
+          - button "Run the agent" [ref=e67]:
+            - img "Icon" [ref=e68]
+            - text: Run
+          - button "Schedule Run" [ref=e70] [cursor=pointer]:
+            - img [ref=e71]
+            - text: Schedule Run
+        - link "React Flow attribution" [ref=e74] [cursor=pointer]:
+          - /url: https://reactflow.dev
+          - text: React Flow
+    - generic [ref=e76]:
+      - button "Tutorial" [ref=e77] [cursor=pointer]
+      - button "Give Feedback" [ref=e78] [cursor=pointer]
+  - region "Notifications alt+T"
+  - alert [ref=e89]
+  - dialog [ref=e137]:
+    - generic [ref=e138]:
+      - generic [ref=e139]:
+        - generic [ref=e140]: Blocks
+        - generic [ref=e141]:
+          - img [ref=e142]
+          - textbox "Blocks" [active] [ref=e144]:
+            - /placeholder: Search blocks
+            - text: text
+        - generic [ref=e145]:
+          - button "All" [ref=e146] [cursor=pointer]
+          - button "Agent" [ref=e147] [cursor=pointer]
+          - button "AI" [ref=e148] [cursor=pointer]
+          - button "Basic" [ref=e149] [cursor=pointer]
+          - button "Communication" [ref=e150] [cursor=pointer]
+          - button "Crm" [ref=e151] [cursor=pointer]
+          - button "Data" [ref=e152] [cursor=pointer]
+          - button "Developer Tools" [ref=e153] [cursor=pointer]
+          - button "Hardware" [ref=e154] [cursor=pointer]
+          - button "Input" [ref=e155] [cursor=pointer]
+          - button "Issue Tracking" [ref=e156] [cursor=pointer]
+          - button "Logic" [ref=e157] [cursor=pointer]
+          - button "Marketing" [ref=e158] [cursor=pointer]
+          - button "Multimedia" [ref=e159] [cursor=pointer]
+          - button "Output" [ref=e160] [cursor=pointer]
+          - button "Productivity" [ref=e161] [cursor=pointer]
+          - button "Safety" [ref=e162] [cursor=pointer]
+          - button "Search" [ref=e163] [cursor=pointer]
+          - button "Social" [ref=e164] [cursor=pointer]
+          - button "Text" [ref=e165] [cursor=pointer]
+      - generic [ref=e169]:
+        - generic [ref=e2827]:
+          - generic [ref=e2828]:
+            - generic [ref=e2829]: Agent Long Text Input
+            - generic [ref=e2830]: Block for long text input (multi-line).
+          - img [ref=e2832]
+        - generic [ref=e2836]:
+          - generic [ref=e2837]:
+            - generic [ref=e2838]: Agent Short Text Input
+            - generic [ref=e2839]: Block for short text input (single-line).
+          - img [ref=e2841]
+        - generic [ref=e550]:
+          - generic [ref=e551]:
+            - generic [ref=e552]: AI Text Generator
+            - generic [ref=e553]: A block that produces text responses using a Large Language Model (LLM) based on customizable prompts and system instructions.
+          - img [ref=e555]
+        - generic [ref=e559]:
+          - generic [ref=e560]:
+            - generic [ref=e561]: AI Text Summarizer
+            - generic [ref=e562]: A block that summarizes long texts using a Large Language Model (LLM), with configurable focus topics and summary styles.
+          - img [ref=e564]
+        - generic [ref=e2845]:
+          - generic [ref=e2846]:
+            - generic [ref=e2847]: Bannerbear Text Overlay
+            - generic [ref=e2848]: Add text overlay to images using Bannerbear templates. Perfect for creating social media graphics, marketing materials, and dynamic image content.
+          - img [ref=e2850]
+        - generic [ref=e2854]:
+          - generic [ref=e2855]:
+            - generic [ref=e2856]: Combine Texts
+            - generic [ref=e2857]: This block combines multiple input texts into a single output text.
+          - img [ref=e2859]
+        - generic [ref=e2863]:
+          - generic [ref=e2864]:
+            - generic [ref=e2865]: Exa Code Context
+            - generic [ref=e2866]: Search billions of GitHub repos, docs, and Stack Overflow for relevant code examples
+          - img [ref=e2868]
+        - generic [ref=e2872]:
+          - generic [ref=e2873]:
+            - generic [ref=e2874]: Extract Text Information
+            - generic [ref=e2875]: This block extracts the text from the given text using the pattern (regex).
+          - img [ref=e2877]
+        - generic [ref=e1306]:
+          - generic [ref=e1307]:
+            - generic [ref=e1308]: Fill Text Template
+            - generic [ref=e1309]: This block formats the given texts using the format template.
+          - img [ref=e1311]
+        - generic [ref=e2881]:
+          - generic [ref=e2882]:
+            - generic [ref=e2883]: Match Text Pattern
+            - generic [ref=e2884]: Matches text against a regex pattern and forwards data to positive or negative output based on the match.
+          - img [ref=e2886]
+        - generic [ref=e2575]:
+          - generic [ref=e2576]:
+            - generic [ref=e2577]: Text Decoder
+            - generic [ref=e2578]: Decodes a string containing escape sequences into actual text
+          - img [ref=e2580]
+        - generic [ref=e2890]:
+          - generic [ref=e2891]:
+            - generic [ref=e2892]: Text Replace
+            - generic [ref=e2893]: This block is used to replace a text with a new text.
+          - img [ref=e2895]
+        - generic [ref=e2899]:
+          - generic [ref=e2900]:
+            - generic [ref=e2901]: Text Split
+            - generic [ref=e2902]: This block is used to split a text into a list of strings.
+          - img [ref=e2904]
+        - generic [ref=e2908]:
+          - generic [ref=e2909]:
+            - generic [ref=e2910]: Unreal Text To Speech
+            - generic [ref=e2911]: Converts text to speech using the Unreal Speech API
+          - img [ref=e2913]
+        - generic [ref=e2539]:
+          - generic [ref=e2540]:
+            - generic [ref=e2541]: Stagehand Extract
+            - generic [ref=e2542]: Extract structured data from a webpage.
+          - img [ref=e2544]
+        - generic [ref=e2917]:
+          - generic [ref=e2918]:
+            - generic [ref=e2919]: Agent Dropdown Input
+            - generic [ref=e2920]: Block for dropdown text selection.
+          - img [ref=e2922]
+        - generic [ref=e2926]:
+          - generic [ref=e2927]:
+            - generic [ref=e2928]: AI Ad Maker Video Creator
+            - generic [ref=e2929]: Creates an AI‑generated 30‑second advert (text + images)
+          - img [ref=e2931]
+        - generic [ref=e2935]:
+          - generic [ref=e2936]:
+            - generic [ref=e2937]: AI Conversation
+            - generic [ref=e2938]: A block that facilitates multi-turn conversations with a Large Language Model (LLM), maintaining context across message exchanges.
+          - img [ref=e2940]
+        - generic [ref=e2944]:
+          - generic [ref=e2945]:
+            - generic [ref=e2946]: AI Image Editor
+            - generic [ref=e2947]: Edit images using BlackForest Labs' Flux Kontext models. Provide a prompt and optional reference image to generate a modified image.
+          - img [ref=e2949]
+        - generic [ref=e388]:
+          - generic [ref=e389]:
+            - generic [ref=e390]: AI List Generator
+            - generic [ref=e391]: A block that creates lists of items based on prompts using a Large Language Model (LLM), with optional source data for context.
+          - img [ref=e393]
+        - generic [ref=e2953]:
+          - generic [ref=e2954]:
+            - generic [ref=e2955]: Code Extraction
+            - generic [ref=e2956]: Extracts code blocks from text and identifies their programming languages
+          - img [ref=e2958]
+        - generic [ref=e2962]:
+          - generic [ref=e2963]:
+            - generic [ref=e2964]: Jina Chunking
+            - generic [ref=e2965]: Chunks texts using Jina AI's segmentation service
+          - img [ref=e2967]
+        - generic [ref=e2971]:
+          - generic [ref=e2972]:
+            - generic [ref=e2973]: Print To Console
+            - generic [ref=e2974]: A debugging block that outputs text to the console for monitoring and troubleshooting workflow execution.
+          - img [ref=e2976]
+        - generic [ref=e2980]:
+          - generic [ref=e2981]:
+            - generic [ref=e2982]: Word Character Count
+            - generic [ref=e2983]: Counts the number of words and characters in a given text.
+          - img [ref=e2985]

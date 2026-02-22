@@ -112,7 +112,7 @@ Mark each task as:
 (Do not output the validation results in the document; just use them to ensure quality.)
 
 5. Store the final representation using the #tool:edit tool at:
-   representation/<appropriate_filename>.<md|json|yaml>
+   representation/<appropriate_filename>.<md|json|yaml> as a single source of truth for test case derivation and validation.
 
    Choose the file format strictly based on what the plan specifies.
 
@@ -125,7 +125,7 @@ Mark each task as:
 - Do not justify design decisions again in the user interaction panel
 
 # When finished:
-- Notify the user that the structured representation has been created
+- Notify the user that the structured representation has been created as a single file in the representation/ directory with the appropriate name and format
 - Provide the exact file path
 - Ask the user to review and approve the representation
 - Suggest proceeding with the representation-to-testcases prompt after approval

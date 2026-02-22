@@ -1,8 +1,8 @@
 # Infrastructure Analysis — AutoGPT Test Suite
 
-**Analysis Date**: February 18, 2026  
+**Analysis Date**: February 22, 2026  
 **Purpose**: Document existing test infrastructure to ensure generated tests align with established patterns  
-**Previous Analysis**: February 11, 2026 (superseded)
+**Previous Analysis**: February 18, 2026 (superseded)
 
 ---
 
@@ -100,6 +100,30 @@ getRole("menuitem", "Edit agent")   // Get by role and name
 ✅ `getSelectors(page).getButton("Button Name")`  
 ✅ `getSelectors(page).getId("data-testid")`
 
+### 3.4 Selector Convention Mapping (CRITICAL — Updated Feb 22, 2026)
+
+**Purpose:** This mapping table is the ONLY permitted reference for translating playwright-cli generated code to getSelectors() equivalents.
+
+**Source:** Based on `AutoGPT/tests/utils/selectors.ts` full source code analysis.
+
+| playwright-cli Generated | getSelectors() Equivalent | Notes |
+|-------------------------|---------------------------|-------|
+| `page.getByRole('button', { name: 'Save' })` | `getButton('Save')` | Exact name match |
+| `page.getByRole('button', { name: /skip/i })` | `getButton(/skip/i)` | Regex supported |
+| `page.getByText('Welcome')` | `getText('Welcome')` | Exact text by default |
+| `page.getByText('Welcome', { exact: false })` | `getText('Welcome', { exact: false })` | Pass options |
+| `page.getByRole('link', { name: 'Home' })` | `getLink('Home')` | Links by name |
+| `page.getByLabel('Email')` | `getField('Email')` | Form fields by label (exact: true) |
+| `page.getByTestId('agent-card')` | `getId('agent-card')` | data-testid attribute |
+| `page.getByTestId(/agent-card-\d+/)` | `getId(/agent-card-\d+/)` | Regex for testid |
+| `page.getByRole('menuitem', { name: 'Edit' })` | `getRole('menuitem', 'Edit')` | Any role with name |
+| `page.getByRole('dialog')` | `getRole('dialog')` | Role without name |
+| `page.getByRole('heading', { level: 5 })` | `getRole('heading', undefined, { level: 5 })` | Role with options |
+
+**RULE:** No selector may be written in any test that does not appear in this table or was not directly emitted by playwright-cli during Phase 5a exploration.
+
+**Validation Method:** Before committing any selector, verify it matches an entry in this table OR was captured verbatim from playwright-cli output.
+
 ---
 
 ## 4. Page Object Model Architecture
@@ -141,8 +165,22 @@ export class BasePage {
 - `closeTutorial()` — dismisses tutorial dialog
 - `saveAgent(name, description)` — clicks save, fills dialog, saves
 - `createDummyAgent()` — creates minimal agent with a Dictionary block
-- `addBlock(block)` — adds a block to the canvas
+- `addBlock(block)` — adds a block to the canvas (searches, clicks block card)
 - `getBlocksFromAPI()` — fetches available blocks from API
+- `getFilteredBlocksFromAPI(filterFn)` — gets blocks matching filter function
+- `openBlocksPanel()` — opens the blocks panel
+- `closeBlocksPanel()` — closes the blocks panel
+- `fillBlockInputByPlaceholder(blockId, placeholder, value, dataId?)` — fills block input by placeholder
+- `fillBlockInputByLabel(blockId, label, value)` — fills block input by label
+- `selectBlockInputValue(blockId, inputName, value, dataId?)` — selects dropdown value
+- `connectBlockOutputToBlockInputViaName(...)` — connects blocks by output/input names
+- `connectBlockOutputToBlockInputViaDataId(...)` — connects blocks by data-ids
+- `runAgent()` — clicks run button
+- `fillRunDialog(inputs)` — fills run dialog inputs
+- `clickRunDialogRunButton()` — clicks run button in dialog
+- `waitForCompletionBadge()` — waits for COMPLETED badge
+- `getBlockById(blockId, dataId?)` — gets block locator
+- **NOTE:** Block interactions require understanding of data-testid patterns and block structure
 
 #### MonitorPage
 - `isLoaded()`, `listAgents()`, `clickAgent(id)`, `deleteAgent(agent, confirm)`
@@ -324,6 +362,41 @@ npx playwright test --list
 |-------|----------|-------------|
 | Delete Agent | `feature_delete_agent/delete-agent.spec.ts` | Feb 18, 2026 |
 | Edit Agent | `feature_edit_agent/edit-agent.spec.ts` | Feb 18, 2026 |
+| Agent Blocks | `feature_agent_blocks/` | Feb 22, 2026 (in progress) |
+
+---
+
+## 12. Agent Blocks Feature Notes (Added Feb 22, 2026)
+
+### 12.1 Key Concepts
+- **Agent Blocks**: Saved agents that can be reused as blocks in other workflows
+- **Block Menu**: The panel where users search and add blocks (including agent blocks) to canvas
+- **Input/Output Blocks**: Special blocks that define the interface of an agent block
+- **Block Connections**: Visual connections between block outputs and inputs
+
+### 12.2 Critical Requirements for Testing
+- Must be able to add Input Block, AI Text Generator Block, Output Block
+- Must be able to connect blocks (output → input)
+- Must be able to name Input and Output blocks (defines agent block interface)
+- Must save agent and verify it appears in Block Menu
+- Must be able to search for and add saved agent as a block
+- Must verify agent block execution produces correct outputs
+
+### 12.3 Anticipated Test Challenges
+- **Block identification**: Blocks may need unique data-id or data-blockid attributes
+- **Connection verification**: Need to verify visual connections exist
+- **Block naming**: Need to locate and edit block name fields
+- **Block Menu search**: Need to search and filter agent blocks by name/tag
+- **Nested workflows**: Agent blocks within agent blocks (hierarchical composition)
+- **Output display**: Results shown in "Agent Outputs" section or via "View More"
+
+### 12.4 Exploration Required
+- How are Input/Output blocks different from other blocks?
+- Where is the block name field located?
+- How does Block Menu search work?
+- What are "agent tags" mentioned in requirements?
+- How are agent blocks distinguished from regular blocks in Block Menu?
+- What happens when Output Block is missing (EC-01)?
 
 ---
 
