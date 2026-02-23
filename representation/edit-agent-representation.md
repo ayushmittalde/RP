@@ -1,281 +1,328 @@
-# Structured Representation: Edit Agent Feature — AutoGPT Platform
+# Edit Agent Feature – Structured Test Representation
+
+> **Source Documentation**: `docs/content/platform/edit-agent.md`
+> **Approved Plan**: `plan/edit-agent-representation-plan.md`
+> **Primary Representation**: Gherkin (Given-When-Then)
+> **Secondary Representation**: Use-Case Specification
+> **Supporting**: Requirement Traceability Matrix (RTM)
+> **Supporting Visuals**: Mermaid Diagrams (Flowchart, Sequence, State)
 
 ---
 
-## Section 1: Requirements Reference Table
+## Section 1: Requirements Reference
 
-All requirements from the approved plan are reproduced here without omission or alteration.
+All requirements are reproduced verbatim from the approved plan without alteration.
 
 ### 1.1 Functional Requirements
 
-| ID    | Requirement Description |
-|-------|------------------------|
-| FR-01 | The user shall be able to navigate to the Monitor Tab within the AutoGPT builder. |
-| FR-02 | The Monitor Tab shall display a list of all agents available to the user. |
-| FR-03 | The agent list shall include agents created by the user and agents downloaded from the marketplace. |
-| FR-04 | The user shall be able to select an agent by clicking on its name. |
-| FR-05 | A pencil (edit) icon shall be displayed next to the selected agent. |
-| FR-06 | Clicking the pencil icon shall open the agent in the editor (edit mode). |
-| FR-07 | The editor shall load the agent with all its existing components and configuration. |
-| FR-08 | The user shall be able to modify the agent's configuration within the editor. |
-| FR-09 | The user shall be able to save changes after making modifications. |
+| ID | Requirement |
+|----|-------------|
+| FR-01 | The system shall provide a Monitor Tab within the AutoGPT builder interface. |
+| FR-02 | The Monitor Tab shall list all agents accessible to the user, including user-created agents and agents downloaded from the marketplace. |
+| FR-03 | The user shall be able to select an agent by clicking on its name within the Monitor Tab. |
+| FR-04 | A pencil icon shall be displayed next to the selected agent. |
+| FR-05 | Clicking the pencil icon shall open the agent in the editor (Edit Mode). |
+| FR-06 | The editor shall load the agent with all its existing components intact. |
+| FR-07 | The user shall be able to modify the agent's configuration within the editor. |
+| FR-08 | The user shall be able to save the modified agent. |
+| FR-09 | All agents (regardless of origin: user-created or marketplace-downloaded) shall be editable. |
 | FR-10 | Saved changes shall be persisted to the user's local instance. |
 
 ### 1.2 Non-Functional Requirements
 
-| ID     | Requirement Description |
-|--------|------------------------|
-| NFR-01 | All agents are editable regardless of their origin (user-created or marketplace-downloaded). |
-| NFR-02 | Changes are saved only to the user's local instance (not pushed back to marketplace). |
+| ID | Requirement |
+|----|-------------|
+| NFR-01 | Changes are saved to the local instance only (not synced back to the marketplace). |
 
-### 1.3 Business Rules
+### 1.3 Business Rules & Constraints
 
-| ID    | Rule Description |
-|-------|-----------------|
-| BR-01 | Any agent — whether self-created or downloaded from the marketplace — can be edited. |
-| BR-02 | Modifications do not affect the original marketplace listing; they apply only to the local copy. |
+| ID | Rule |
+|----|------|
+| BR-01 | Any agent visible in the Monitor Tab can be edited, including marketplace-downloaded agents. |
+| BR-02 | Edits affect the local copy of the agent only. |
+
+### 1.4 Preconditions
+- The user has access to the AutoGPT Builder application.
+- At least one agent exists in the Monitor Tab (user-created or downloaded).
+
+### 1.5 Postconditions
+- The agent's configuration is updated and saved to the local instance.
 
 ---
 
-## Section 2: Use Case Specification (Primary Representation)
+## Section 2: Gherkin Scenarios (Primary Representation)
+
+> Each scenario is tagged with the requirement IDs it covers to maintain bidirectional traceability.
+
+```gherkin
+Feature: Edit Agent in AutoGPT Builder
+  As a user of the AutoGPT Builder
+  I want to edit existing agents in the Monitor Tab
+  So that I can update agent configurations and save them to my local instance
+
+  Background:
+    Given the user has access to the AutoGPT Builder application
+
+  # ---------------------------------------------------------------------------
+  # SC-01: Happy Path – Edit and save a user-created agent
+  # Covers: FR-01, FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, FR-08, FR-10
+  # ---------------------------------------------------------------------------
+  @SC-01 @FR-01 @FR-02 @FR-03 @FR-04 @FR-05 @FR-06 @FR-07 @FR-08 @FR-10
+  Scenario: Successfully edit and save a user-created agent
+    Given the Monitor Tab is open in the AutoGPT Builder
+    And at least one user-created agent is visible in the agent list
+    When the user clicks on the agent name
+    Then the agent is highlighted in the list
+    And a pencil icon is displayed next to the selected agent
+    When the user clicks the pencil icon
+    Then the editor opens with the agent loaded
+    And all existing components of the agent are intact in the editor
+    When the user modifies the agent's configuration
+    And the user saves the changes
+    Then the agent's updated configuration is persisted to the local instance
+
+  # ---------------------------------------------------------------------------
+  # SC-02: Happy Path – Edit and save a marketplace-downloaded agent
+  # Covers: FR-01, FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, FR-08, FR-09,
+  #         FR-10, NFR-01, BR-01, BR-02
+  # ---------------------------------------------------------------------------
+  @SC-02 @FR-01 @FR-02 @FR-03 @FR-04 @FR-05 @FR-06 @FR-07 @FR-08 @FR-09 @FR-10 @NFR-01 @BR-01 @BR-02
+  Scenario: Successfully edit and save a marketplace-downloaded agent
+    Given the Monitor Tab is open in the AutoGPT Builder
+    And at least one agent downloaded from the marketplace is visible in the agent list
+    When the user clicks on the marketplace agent name
+    Then the agent is highlighted in the list
+    And a pencil icon is displayed next to the selected agent
+    When the user clicks the pencil icon
+    Then the editor opens with the agent loaded
+    And all original components of the marketplace agent are intact in the editor
+    When the user modifies the agent's configuration
+    And the user saves the changes
+    Then the agent's updated configuration is persisted to the local instance only
+    And the changes are not synced back to the marketplace
+
+  # ---------------------------------------------------------------------------
+  # SC-03: Edge Case – Monitor Tab contains no agents (EC-01)
+  # Covers: FR-01, FR-02
+  # ---------------------------------------------------------------------------
+  @SC-03 @EC-01 @FR-01 @FR-02
+  Scenario: Monitor Tab displays no agents when none exist
+    Given the Monitor Tab is open in the AutoGPT Builder
+    And no agents exist in the user's account
+    When the user views the Monitor Tab
+    Then no agent names are displayed in the agent list
+    And no pencil icon is visible
+
+  # ---------------------------------------------------------------------------
+  # SC-04: Edge Case – Marketplace agent loads with all original components (EC-02)
+  # Covers: FR-05, FR-06, BR-01
+  # ---------------------------------------------------------------------------
+  @SC-04 @EC-02 @FR-05 @FR-06 @BR-01
+  Scenario: Marketplace-downloaded agent opens with all original components intact
+    Given the Monitor Tab is open in the AutoGPT Builder
+    And a marketplace-downloaded agent is selected and highlighted
+    When the user clicks the pencil icon next to the agent
+    Then the editor opens
+    And every original component of the marketplace agent is present and loaded in the editor
+
+  # ---------------------------------------------------------------------------
+  # SC-05: Edge Case – Save without making any modifications (EC-03)
+  # Covers: FR-08, FR-10
+  # ---------------------------------------------------------------------------
+  @SC-05 @EC-03 @FR-08 @FR-10
+  Scenario: User saves an agent without making any modifications
+    Given the Monitor Tab is open in the AutoGPT Builder
+    And an agent is open in the editor with no changes made
+    When the user saves the agent
+    Then the agent is saved to the local instance
+    And the agent configuration remains unchanged
+
+  # ---------------------------------------------------------------------------
+  # SC-06: Verify Monitor Tab lists both agent origins
+  # Covers: FR-02, BR-01
+  # ---------------------------------------------------------------------------
+  @SC-06 @FR-02 @BR-01
+  Scenario Outline: Monitor Tab lists agents from all origins
+    Given the Monitor Tab is open in the AutoGPT Builder
+    And at least one <agent_origin> agent exists in the account
+    When the user views the agent list in the Monitor Tab
+    Then the <agent_origin> agent is visible in the list
+    And the user can click on the <agent_origin> agent to select it
+
+    Examples:
+      | agent_origin          |
+      | user-created          |
+      | marketplace-downloaded |
+```
+
+---
+
+## Section 3: Use-Case Specification (Secondary Representation)
 
 ### UC-01: Edit Agent
 
-| Field | Value |
-|-------|-------|
+| Field | Detail |
+|-------|--------|
 | **Use Case ID** | UC-01 |
 | **Use Case Name** | Edit Agent |
-| **Primary Actor** | User |
-| **System** | AutoGPT Platform |
-| **Source Document** | `docs/content/platform/edit-agent.md` |
+| **Actor(s)** | User (primary); AutoGPT Builder (system) |
+| **Description** | The user selects an agent from the Monitor Tab, opens it in the editor via the pencil icon, modifies its configuration, and saves the changes to the local instance. |
+| **Preconditions** | 1. The user has access to the AutoGPT Builder application. 2. At least one agent (user-created or marketplace-downloaded) exists in the Monitor Tab. |
+| **Postconditions** | The agent's configuration is updated and saved to the user's local instance. Changes are not propagated to the marketplace. |
+| **Trigger** | User navigates to the Monitor Tab in AutoGPT Builder. |
+
+#### Main Flow (Basic Course of Events)
+
+| Step | Actor | Action / System Response |
+|------|-------|--------------------------|
+| 1 | User | Navigates to the Monitor Tab in the AutoGPT Builder. *(FR-01)* |
+| 2 | AutoGPT Builder | Displays the Monitor Tab with a list of all agents (user-created and marketplace-downloaded). *(FR-02)* |
+| 3 | User | Clicks on the name of the agent to edit. *(FR-03)* |
+| 4 | AutoGPT Builder | Highlights the selected agent and displays the pencil icon next to it. *(FR-04)* |
+| 5 | User | Clicks the pencil icon next to the selected agent. *(FR-05)* |
+| 6 | AutoGPT Builder | Opens the agent in the editor with all existing components loaded. *(FR-05, FR-06)* |
+| 7 | User | Makes desired modifications to the agent's configuration. *(FR-07)* |
+| 8 | User | Saves the changes. *(FR-08)* |
+| 9 | AutoGPT Builder | Persists the updated configuration to the user's local instance. *(FR-10, NFR-01)* |
+
+#### Alternative Flow A: No Agents in Monitor Tab
+
+| Step | Actor | Action / System Response |
+|------|-------|--------------------------|
+| 1 | User | Navigates to the Monitor Tab. *(FR-01)* |
+| 2 | AutoGPT Builder | Displays the Monitor Tab with an empty agent list. *(FR-02)* |
+| 3 | — | No agents are available to select or edit. Use case ends. |
+
+#### Alternative Flow B: Marketplace-Downloaded Agent
+
+| Step | Actor | Action / System Response |
+|------|-------|--------------------------|
+| 3b | User | Clicks on the name of a marketplace-downloaded agent. *(FR-03, BR-01)* |
+| 4b | AutoGPT Builder | Highlights the agent and shows the pencil icon, identical to user-created agents. *(FR-04, FR-09)* |
+| 6b | AutoGPT Builder | Opens the marketplace agent in the editor with all its original components intact. *(FR-06, BR-01)* |
+| 9b | AutoGPT Builder | Persists changes locally; changes are not synced to the marketplace. *(FR-10, NFR-01, BR-02)* |
+
+#### Alternative Flow C: Save Without Modifications
+
+| Step | Actor | Action / System Response |
+|------|-------|--------------------------|
+| 7c | User | Proceeds directly to save without making changes. *(EC-03)* |
+| 8c | User | Saves the agent. *(FR-08)* |
+| 9c | AutoGPT Builder | Persists the unchanged configuration to the local instance. *(FR-10)* |
 
 ---
 
-### Preconditions
+## Section 4: Requirement Traceability Matrix (RTM)
 
-| ID    | Precondition Description |
-|-------|--------------------------|
-| PC-01 | The user is authenticated and has access to the AutoGPT builder. |
-| PC-02 | At least one agent exists in the user's list (own or marketplace-downloaded). |
-
----
-
-### Main Success Scenario
-
-| Step | Actor | Action | System Response | Traceability |
-|------|-------|--------|-----------------|--------------|
-| UC-01-S1 | User | Navigates to the Monitor Tab in the AutoGPT builder. | AutoGPT Platform renders the Monitor Tab and displays the complete list of agents, including user-created agents and marketplace-downloaded agents. | FR-01, FR-02, FR-03 |
-| UC-01-S2 | User | Locates the target agent in the list and clicks on its name to select it. | AutoGPT Platform marks the agent as selected and displays the pencil (edit) icon next to the selected agent. | FR-04, FR-05 |
-| UC-01-S3 | User | Clicks the pencil (edit) icon displayed next to the selected agent. | AutoGPT Platform opens the agent in the editor in edit mode, loading all existing components and configuration. | FR-06, FR-07 |
-| UC-01-S4 | User | Makes desired modifications to the agent's configuration within the editor. | The editor reflects the user's changes in the configuration. | FR-08 |
-| UC-01-S5 | User | Saves the updated agent. | AutoGPT Platform persists the modifications to the user's local instance. | FR-09, FR-10 |
-
----
-
-### Postconditions
-
-| ID    | Postcondition Description |
-|-------|---------------------------|
-| PO-01 | The selected agent's configuration reflects the user's modifications. |
-| PO-02 | The updated configuration is saved to the local instance. |
-| PO-03 | The original marketplace listing (if applicable) is not modified. |
+| Req ID | Requirement Summary | Gherkin Scenario(s) | Use-Case Step(s) | Test Type |
+|--------|---------------------|---------------------|-----------------|-----------|
+| FR-01 | Monitor Tab provided in AutoGPT Builder | SC-01, SC-02, SC-03, SC-06 | UC-01 Step 1–2 | Functional |
+| FR-02 | Monitor Tab lists all agents (created + marketplace) | SC-01, SC-02, SC-03, SC-06 | UC-01 Step 2 | Functional |
+| FR-03 | User can select agent by clicking its name | SC-01, SC-02, SC-06 | UC-01 Step 3 | Functional |
+| FR-04 | Pencil icon displayed next to selected agent | SC-01, SC-02 | UC-01 Step 4 | Functional / UI |
+| FR-05 | Clicking pencil icon opens editor (Edit Mode) | SC-01, SC-02, SC-04 | UC-01 Step 5–6 | Functional |
+| FR-06 | Editor loads agent with all existing components | SC-01, SC-02, SC-04 | UC-01 Step 6 | Functional |
+| FR-07 | User can modify agent configuration in editor | SC-01, SC-02 | UC-01 Step 7 | Functional |
+| FR-08 | User can save the modified agent | SC-01, SC-02, SC-05 | UC-01 Step 8 | Functional |
+| FR-09 | All agents are editable regardless of origin | SC-02, SC-06 | UC-01 Alt Flow B Step 4b | Functional / Business Rule |
+| FR-10 | Saved changes persisted to local instance | SC-01, SC-02, SC-05 | UC-01 Step 9 | Functional |
+| NFR-01 | Changes saved to local instance only (not marketplace) | SC-02 | UC-01 Step 9 / Alt Flow B Step 9b | Non-Functional |
+| BR-01 | Any Monitor Tab agent (incl. marketplace) can be edited | SC-02, SC-04, SC-06 | UC-01 Alt Flow B | Business Rule |
+| BR-02 | Edits affect local copy only | SC-02 | UC-01 Alt Flow B Step 9b | Business Rule |
+| EC-01 | Monitor Tab has no agents listed | SC-03 | UC-01 Alt Flow A | Edge Case |
+| EC-02 | Marketplace agent loads with all original components | SC-04 | UC-01 Alt Flow B Step 6b | Edge Case |
+| EC-03 | User saves without making any modifications | SC-05 | UC-01 Alt Flow C | Edge Case |
 
 ---
 
-### Alternative Flows
+## Section 5: Supporting Mermaid Diagrams
 
-#### AF-01: Agent List is Empty
+### Diagram 1: Edit Agent Activity / Flowchart
 
-| Field | Value |
-|-------|-------|
-| **Alternative Flow ID** | AF-01 |
-| **Trigger** | At UC-01-S1, no agents exist in the user's list. |
-| **Violated Precondition** | PC-02 |
-| **Flow** | Monitor Tab renders an empty list. No agent can be selected. Use case does not proceed beyond S1. |
-| **Result** | Edit workflow is unavailable. User must create or download an agent before editing is possible. |
-| **Traceability** | FR-01, FR-02 |
-
----
-
-#### AF-02: Marketplace-Downloaded Agent Selected
-
-| Field | Value |
-|-------|-------|
-| **Alternative Flow ID** | AF-02 |
-| **Trigger** | At UC-01-S2, the user selects an agent that was downloaded from the marketplace. |
-| **Flow** | Identical to the Main Success Scenario (UC-01-S1 through UC-01-S5). The pencil icon is displayed and edit mode is accessible in the same manner as for a user-created agent. |
-| **Result** | Same as Main Success Scenario postconditions. The marketplace listing is not modified (BR-02). |
-| **Traceability** | FR-04, FR-05, FR-06, FR-07, FR-08, FR-09, FR-10, BR-01, BR-02, NFR-01, NFR-02 |
-
----
-
-### Business Rule References
-
-| Business Rule | Applied At Step | Effect |
-|---------------|-----------------|--------|
-| BR-01 | UC-01-S1, UC-01-S2 | Both user-created and marketplace-downloaded agents appear in the list and are selectable for editing. |
-| BR-02 | UC-01-S5 | Save operation writes to the local instance only; the upstream marketplace record is unchanged. |
-
----
-
-## Section 3: Decision Table (Supplementary — BR-01)
-
-The decision table models business rule BR-01: agent editability is not conditioned on agent origin.
-
-| DT-ID  | Agent Type             | User Authenticated (PC-01) | Agent in List (PC-02) | Edit Permitted | Expected Outcome | Traceability |
-|--------|------------------------|----------------------------|----------------------|----------------|------------------|--------------|
-| DT-01  | User-created           | Yes                        | Yes                  | **Yes**        | Full edit flow (UC-01 main success scenario) | BR-01, FR-01–FR-10 |
-| DT-02  | Marketplace-downloaded | Yes                        | Yes                  | **Yes**        | Full edit flow (AF-02; identical behavior to DT-01) | BR-01, BR-02, NFR-01, NFR-02 |
-| DT-03  | User-created           | Yes                        | No                   | **N/A**        | Monitor Tab displays empty list; edit workflow unavailable (AF-01) | PC-02, FR-02 |
-| DT-04  | Marketplace-downloaded | Yes                        | No                   | **N/A**        | Monitor Tab displays empty list; edit workflow unavailable (AF-01) | PC-02, FR-02 |
-| DT-05  | Any                    | No                         | Any                  | **No**         | User cannot access the AutoGPT builder; use case not reachable | PC-01 |
-
----
-
-## Section 4: Visual Diagrams
-
-### Diagram 1 — Activity / Flowchart (FR-01 through FR-10)
-
-> **Directive:** `flowchart TD`  
-> **Scope:** End-to-end user procedure for editing an agent, from opening the builder through persisting saved changes. Includes the implicit decision node for agent existence.
+> **Scope**: Full workflow — start → Monitor Tab → Agent selected → Pencil icon → Editor → Modify → Save → End
+> **Traceability**: FR-01 through FR-10, NFR-01
 
 ```mermaid
 flowchart TD
-    START([User Opens AutoGPT Builder])
-    S1[Navigate to Monitor Tab\nFR-01]
-    S2[Monitor Tab Renders Agent List\nFR-02 / FR-03]
-    D1{Agent in List?}
-    NOAGENT([No Agents Available\nUse Case Cannot Proceed])
-    S3[Click Agent Name\nFR-04]
-    S4[Pencil Icon Displayed\nFR-05]
-    S5[Click Pencil Icon\nFR-06]
-    S6[Editor Opens with Agent Configuration\nFR-07]
-    S7[Modify Agent Configuration\nFR-08]
-    S8[Save Changes\nFR-09]
-    S9([Changes Persisted to Local Instance\nFR-10])
-
-    START --> S1
-    S1 --> S2
-    S2 --> D1
-    D1 -->|Yes| S3
-    D1 -->|No| NOAGENT
-    S3 --> S4
-    S4 --> S5
-    S5 --> S6
-    S6 --> S7
-    S7 --> S8
-    S8 --> S9
+    A([Start]) --> B[Navigate to AutoGPT Builder]
+    B --> C[Open Monitor Tab]
+    C --> D{Agents in list?}
+    D -- No --> E([No agents to edit - End])
+    D -- Yes --> F["View list of agents<br/>(created + marketplace-downloaded)"]
+    F --> G[Click on agent name]
+    G --> H[Agent selected - pencil icon visible]
+    H --> I[Click pencil icon]
+    I --> J["Editor opens with agent<br/>and all existing components loaded"]
+    J --> K[Make desired modifications to agent configuration]
+    K --> L[Save changes]
+    L --> M["Changes saved to local instance only"]
+    M --> N([End])
 ```
 
 ---
 
-### Diagram 2 — Sequence Diagram (User ↔ System Interactions)
+### Diagram 2: Edit Agent Sequence Diagram
 
-> **Directive:** `sequenceDiagram`  
-> **Scope:** All five steps of UC-01 — Navigate, Select, Enter Edit Mode, Modify, Save. Covers User-initiated actions and System responses.
+> **Scope**: User ↔ AutoGPT Builder (Monitor Tab) ↔ Agent Editor message exchange
+> **Traceability**: FR-01, FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, FR-08, FR-10, NFR-01
 
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant UI as AutoGPT Builder UI
-    participant MT as Monitor Tab
-    participant AE as Agent Editor
+    actor User
+    participant MonitorTab as AutoGPT Builder (Monitor Tab)
+    participant Editor as Agent Editor
 
-    Note over U,MT: UC-01-S1 — Navigate to Monitor Tab (FR-01)
-    U->>UI: Navigate to Monitor Tab
-    UI->>MT: Load agent list
-    MT-->>U: Display all agents (user-created and marketplace-downloaded) (FR-02, FR-03)
-
-    Note over U,MT: UC-01-S2 — Select Agent (FR-04, FR-05)
-    U->>MT: Click agent name
-    MT-->>U: Highlight selected agent and show pencil icon
-
-    Note over U,AE: UC-01-S3 — Enter Edit Mode (FR-06, FR-07)
-    U->>MT: Click pencil icon
-    MT->>AE: Open agent in editor
-    AE-->>U: Load agent with all existing components and configuration
-
-    Note over U,AE: UC-01-S4 — Modify Configuration (FR-08)
-    U->>AE: Make modifications to agent configuration
-    AE-->>U: Reflect changes in editor
-
-    Note over U,AE: UC-01-S5 — Save Changes (FR-09, FR-10)
-    U->>AE: Save updated agent
-    AE-->>U: Confirm save and persist changes to local instance
+    User->>MonitorTab: Navigate to Monitor Tab
+    MonitorTab-->>User: Display list of agents (created + marketplace-downloaded)
+    User->>MonitorTab: Click on agent name
+    MonitorTab-->>User: Highlight agent, show pencil icon
+    User->>MonitorTab: Click pencil icon
+    MonitorTab->>Editor: Load agent with all existing components
+    Editor-->>User: Display agent in edit mode
+    User->>Editor: Modify agent configuration
+    User->>Editor: Save changes
+    Editor-->>User: Confirm changes saved to local instance
 ```
 
 ---
 
-### Diagram 3 — State Diagram (Agent Edit Session Lifecycle)
+### Diagram 3: Edit Agent State Diagram
 
-> **Directive:** `stateDiagram-v2`  
-> **Scope:** Five system states corresponding to the five-step workflow. Transitions are triggered by user actions. Traceability IDs reference the use case steps and FRs.
+> **Scope**: All discrete UI states from Monitor Tab view to agent saved
+> **Traceability**: FR-01 through FR-10, NFR-01, BR-01, BR-02
 
 ```mermaid
 stateDiagram-v2
-    [*] --> MonitorTabLoaded : User navigates to Monitor Tab
+    [*] --> MonitorTab : Navigate to Monitor Tab
 
-    MonitorTabLoaded : Monitor Tab Loaded
-    note right of MonitorTabLoaded
-        FR-01, FR-02, FR-03
-        Agent list visible to user
-    end note
+    MonitorTab --> AgentSelected : Click agent name
+    AgentSelected --> MonitorTab : Deselect or navigate away
 
-    MonitorTabLoaded --> AgentSelected : User clicks agent name
+    AgentSelected --> EditMode : Click pencil icon
 
-    AgentSelected : Agent Selected
+    EditMode --> ModificationsMade : Edit agent configuration
+    ModificationsMade --> EditMode : Undo changes
+
+    ModificationsMade --> Saved : Save changes
+    EditMode --> Saved : Save without modifications
+
+    Saved --> [*]
+
     note right of AgentSelected
-        FR-04, FR-05
-        Pencil icon displayed
+        Pencil icon is visible
+        for selected agent
     end note
 
-    AgentSelected --> EditModeActive : User clicks pencil icon
-
-    EditModeActive : Edit Mode Active
-    note right of EditModeActive
-        FR-06, FR-07
-        Agent loaded in editor
+    note right of EditMode
+        Editor loads with all
+        existing components
     end note
 
-    EditModeActive --> AgentModified : User modifies configuration
-
-    AgentModified : Agent Modified
-    note right of AgentModified
-        FR-08
-        Unsaved changes present
+    note right of Saved
+        Changes persisted to
+        local instance only
     end note
-
-    AgentModified --> ChangesSaved : User saves changes
-
-    ChangesSaved : Changes Saved
-    note right of ChangesSaved
-        FR-09, FR-10
-        Persisted to local instance
-    end note
-
-    ChangesSaved --> [*]
 ```
-
----
-
-## Section 5: Requirement Traceability Matrix (RTM)
-
-| Requirement ID | Description (Summary) | Use Case Step | Alternative Flow | Decision Table | Diagram 1 Node | Diagram 2 Message | Diagram 3 State |
-|----------------|----------------------|---------------|------------------|----------------|----------------|-------------------|-----------------|
-| FR-01 | Navigate to Monitor Tab | UC-01-S1 | — | DT-01, DT-02 | S1 | U→UI: Navigate | MonitorTabLoaded |
-| FR-02 | Monitor Tab displays agent list | UC-01-S1 | AF-01 | DT-03, DT-04 | S2 | MT→U: Display all agents | MonitorTabLoaded |
-| FR-03 | List includes user-created and marketplace agents | UC-01-S1 | AF-02 | DT-01, DT-02 | S2 | MT→U: Display all agents | MonitorTabLoaded |
-| FR-04 | Select agent by clicking name | UC-01-S2 | AF-02 | DT-01, DT-02 | S3 | U→MT: Click agent name | AgentSelected |
-| FR-05 | Pencil icon shown next to selected agent | UC-01-S2 | AF-02 | DT-01, DT-02 | S4 | MT→U: Show pencil icon | AgentSelected |
-| FR-06 | Clicking pencil opens agent in editor | UC-01-S3 | AF-02 | DT-01, DT-02 | S5 | U→MT: Click pencil icon | EditModeActive |
-| FR-07 | Editor loads agent with existing components | UC-01-S3 | AF-02 | DT-01, DT-02 | S6 | AE→U: Load agent | EditModeActive |
-| FR-08 | User can modify agent configuration | UC-01-S4 | AF-02 | DT-01, DT-02 | S7 | U→AE: Make modifications | AgentModified |
-| FR-09 | User can save changes | UC-01-S5 | AF-02 | DT-01, DT-02 | S8 | U→AE: Save updated agent | ChangesSaved |
-| FR-10 | Saved changes persisted to local instance | UC-01-S5 | AF-02 | DT-01, DT-02 | S9 | AE→U: Confirm save | ChangesSaved |
-| NFR-01 | All agents editable regardless of origin | UC-01-S1, S2 | AF-02 | DT-01, DT-02 | S2, S3 | MT→U: Display all agents | MonitorTabLoaded, AgentSelected |
-| NFR-02 | Changes saved to local instance only | UC-01-S5 | AF-02 | DT-01, DT-02 | S9 | AE→U: Confirm save | ChangesSaved |
-| BR-01 | Any agent can be edited | UC-01-S1, S2 | AF-02 | DT-01, DT-02 | D1→Yes (both) | MT→U: Display all agents | AgentSelected |
-| BR-02 | Modifications apply to local copy only | UC-01-S5 | AF-02 | DT-01, DT-02 | S9 | AE→U: Confirm save | ChangesSaved |
 
 ---
 
@@ -284,11 +331,11 @@ stateDiagram-v2
 | Field | Value |
 |-------|-------|
 | **Model** | Claude Sonnet 4.6 (GitHub Copilot) |
-| **Date** | 2026-02-18 |
-| **Time** | Executed on February 18, 2026 |
-| **Source Document** | `docs/content/platform/edit-agent.md` |
+| **Date** | 2026-02-23 |
+| **Source Documentation** | `docs/content/platform/edit-agent.md` |
 | **Approved Plan** | `plan/edit-agent-representation-plan.md` |
 | **Output File** | `representation/edit-agent-representation.md` |
-| **Primary Representation** | Use Case Specification (UC-01) |
-| **Supplementary Representation** | Decision Table (BR-01) |
-| **Visual Companions** | Flowchart TD, sequenceDiagram, stateDiagram-v2 |
+
+---
+
+*End of Representation*

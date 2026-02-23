@@ -1,266 +1,190 @@
-# Exploration Evidence — Edit Agent Feature
+# Exploration Evidence – Edit Agent Feature
 
-**Exploration Date**: 2026-02-19  
-**Explorer**: GitHub Copilot (Phase 5a Live System Exploration)  
-**Test User**: Sherri97@yahoo.com (from user-pool.json)  
-**Application**: AutoGPT Platform at http://localhost:3000  
-
----
-
-## Summary of Empirical Findings
-
-### CRITICAL DIVERGENCE FROM REQUIREMENTS DOCUMENTATION
-
-| Requirement | Documentation States | Empirical Reality |
-|-------------|---------------------|-------------------|
-| FR-01 | Navigate to Monitor Tab to edit | Edit feature lives in LIBRARY PAGE, not Monitor Tab |
-| FR-04 | Select agent by clicking name in agent list | Monitor Tab agent click causes ERROR PAGE |
-| FR-05 | Pencil icon displayed next to selected agent | "Edit agent" is inside a dropdown menu accessed via "More actions" button |
-| FR-06 | Clicking pencil opens agent in editor | "Edit agent" menu item click opens NEW TAB |
-| "Open in builder" navigation | Infrastructure analysis said same-tab navigation | ALSO opens NEW TAB (no flowVersion param) |
+**Date**: 2026-02-23  
+**Explorer**: GitHub Copilot – Principal QA Automation Architect  
+**App Under Test**: AutoGPT Builder at `http://localhost:3000`  
+**Phase**: 4a – Live System Exploration  
+**Test User**: Sherri97@yahoo.com (from `.auth/user-pool.json`)
 
 ---
 
-## Code Bank (Verbatim playwright-cli Generated Code)
+## 1. Code Bank (Verbatim playwright-cli Generated Code)
 
-### Login Flow
-```typescript
-// Cookie acceptance
-await page.getByRole('button', { name: 'Accept All' }).click();
+All lines below were directly emitted by `playwright-cli` during this session.
 
-// Email fill
-await page.getByRole('textbox', { name: 'Email' }).fill('Sherri97@yahoo.com');
-
-// Password fill
-await page.getByRole('textbox', { name: 'Password Forgot password?' }).fill('vSQ8Oc6G5nI0');
-
-// Login submit
-await page.getByRole('button', { name: 'Login' }).click();
-// → POST-LOGIN URL: http://localhost:3000/marketplace
-```
-
-### Builder — Save New Agent
-```typescript
-// Save button click (data-testid="blocks-control-save-button")
-await page.getByTestId('blocks-control-save-button').click();
-
-// Name field fill (data-testid="save-control-name-input")
-await page.getByTestId('save-control-name-input').fill('EditAgentExploration-Test');
-
-// Save dialog save button (data-testid="save-control-save-agent-button")
-await page.getByTestId('save-control-save-agent-button').click();
-// → POST-SAVE URL: http://localhost:3000/build?flowID=d05c7ed7-66a7-4849-b2b8-bb02d9c8c09d&flowVersion=1
-```
-
-### Library Page — More Actions Dropdown Open
-```typescript
-// More actions button click (NOTE: playwright-cli generated Radix ID)
-await page.locator('#radix-_r_4_').click();
-// PREFERRED EQUIVALENT (tested to work via page objects):
-// card.first().getByRole('button', { name: 'More actions' }).click();
-```
-
-### Library Page — Edit Agent Menu Item Click
-```typescript
-await page.getByRole('menuitem', { name: 'Edit agent' }).click();
-// → RESULT: NEW TAB OPENED
-// → Tab URL: http://localhost:3000/build?flowID=d05c7ed7-66a7-4849-b2b8-bb02d9c8c09d&flowVersion=1
-```
-
-### Library Page — Open in Builder Link Click
-```typescript
-await page.getByTestId('library-agent-card-open-in-builder-link').first().click();
-// → RESULT: NEW TAB OPENED (contrary to infrastructure analysis)
-// → Tab URL: http://localhost:3000/build?flowID=d05c7ed7-66a7-4849-b2b8-bb02d9c8c09d
-// Note: NO flowVersion param in URL (unlike Edit agent action)
-```
-
-### Agent Detail Page — Edit Agent Button Click
-```typescript
-await page.getByRole('button', { name: 'Edit agent' }).click();
-// → RESULT: NEW TAB OPENED  
-// → Tab URL: http://localhost:3000/build?flowID=d05c7ed7-66a7-4849-b2b8-bb02d9c8c09d&flowVersion=2
-```
-
-### Monitor Tab — Agent Row Click (BROKEN)
-```typescript
-await page.getByRole('cell', { name: 'EditAgentExploration-Modified' }).click();
-// → RESULT: ERROR PAGE shown
-// → Text: "Something went wrong"
-// → Text: "We had the following error when retrieving application:"
-// → Text: "An unexpected error occurred. Please try again or contact support if the problem persists."
-```
-
-### Builder in Edit Mode — Save Dialog Pre-fill Verification
-```typescript
-// Save button opens dialog
-await page.getByTestId('blocks-control-save-button').click();
-// Name field value is PRE-FILLED with existing agent name
-const nameVal = await page.getByTestId('save-control-name-input').inputValue();
-// nameVal === "EditAgentExploration-Test" ← CONFIRMED PRE-FILL
-```
-
-### Builder in Edit Mode — Modify Name and Save
-```typescript
-await page.getByTestId('blocks-control-save-button').click();
-await page.getByTestId('save-control-name-input').waitFor({ state: 'visible', timeout: 5000 });
-await page.getByTestId('save-control-name-input').fill('EditAgentExploration-Modified');
-await page.getByTestId('save-control-description-input').fill('Modified for testing');
-await page.getByTestId('save-control-save-agent-button').click();
-// → POST-SAVE URL: flowVersion INCREMENTED: flowVersion=1 → flowVersion=2
-// → CONFIRMED: http://localhost:3000/build?flowID=d05c7ed7-66a7-4849-b2b8-bb02d9c8c09d&flowVersion=2
-```
-
-### Library — Agent Name Update Verification After Save
-```typescript
-// After page reload, modified name appears in library
-// CONFIRMED: First card name was "EditAgentExploration-Modified" (was "EditAgentExploration-Test")
-await page.reload();
-await page.waitForLoadState('networkidle');
-// Agent list: ["EditAgentExploration-Modified", ...]  ← CONFIRMED PERSISTENCE
-```
+| # | Action | Generated Code | getSelectors() Equivalent |
+|---|--------|----------------|--------------------------|
+| CB-01 | Fill email field | `await page.getByRole('textbox', { name: 'Email' }).fill('Sherri97@yahoo.com');` | `getField('Email')` |
+| CB-02 | Fill password field | `await page.getByRole('textbox', { name: 'Password Forgot password?' }).fill('...');` | Uses LoginPage.login() |
+| CB-03 | Click Login | `await page.getByRole('button', { name: 'Login' }).click();` | `getButton('Login')` |
+| CB-04 | Accept cookies | `await page.getByRole('button', { name: 'Accept All' }).click();` | `getButton('Accept All')` |
+| CB-05 | Skip Tutorial | `await page.getByRole('button', { name: 'Skip Tutorial' }).click();` | `getButton('Skip Tutorial')` |
+| CB-06 | Click Save button | `await page.getByTestId('blocks-control-save-button').click();` | `getId('blocks-control-save-button')` |
+| CB-07 | Fill Name in save dialog | `await page.getByTestId('save-control-name-input').fill('EA-Explore-Agent-001');` | `getId('save-control-name-input')` |
+| CB-08 | Fill Description in save dialog | `await page.getByTestId('save-control-description-input').fill('...');` | `getId('save-control-description-input')` |
+| CB-09 | Click Save Agent button | `await page.getByTestId('save-control-save-agent-button').click();` | `getId('save-control-save-agent-button')` |
+| CB-10 | Click More actions | `await page.locator('#radix-_r_8_').click();` | **UNSTABLE** – Use LibraryPage.openAgentActions() |
+| CB-11 | Click Edit agent menuitem | `await page.getByRole('menuitem', { name: 'Edit agent' }).click();` | `getRole('menuitem', 'Edit agent')` |
+| CB-12 | Click Open in builder link | `await page.getByTestId('library-agent-card-open-in-builder-link').first().click();` | `getId('library-agent-card-open-in-builder-link')` |
+| CB-13 | Click Edit agent button (detail page) | `await page.getByRole('button', { name: 'Edit agent' }).click();` | `getButton('Edit agent')` |
+| CB-14 | Get name input value | `await page.getByTestId('save-control-name-input').evaluate('el => el.value');` | `await getId('save-control-name-input').evaluate(...)` |
+| CB-15 | Get description input value | `await page.getByTestId('save-control-description-input').evaluate('el => el.value');` | same pattern |
+| CB-16 | Click row in Monitor Tab | `await page.getByTestId('9ad39dbb-2dc3-4aa7-8e97-96d3bffbb5ee').click();` | `getId('<agent-uuid>')` |
 
 ---
 
-## Snapshot Protocol
+## 2. Snapshot Protocol
 
-### Snapshot: Library page with agents loaded
-- **URL**: `http://localhost:3000/library?sort=updatedAt`
-- **Key elements observed**:
-  - `data-testid="agents-count"` → "10" (number of agents)
-  - 10x `data-testid="library-agent-card"` cards
-  - Each card has `button "More actions"` 
-  - Each card has `link "<AgentName>"` wrapping `heading "<AgentName>" [level=5]`
-  - Each card has `data-testid="library-agent-card-open-in-builder-link"` (href = `/build?flowID=<uuid>`)
-  - Each card has `data-testid="library-agent-card-see-runs-link"` (href = `/library/agents/<uuid>`)
+### SP-01: Login Page (Pre-Login)
+- **URL**: `http://localhost:3000/login`
+- **Title**: `"AutoGPT Platform"`
+- **Elements present**: email textbox, password textbox, Login button, Sign up link, cookie consent dialog
 
-### Snapshot: More Actions Dropdown Opened
-- **URL**: `http://localhost:3000/library?sort=updatedAt`
-- **Elements appeared**:
-  - `menuitem "Edit agent"` (ref=e381)
-  - `menuitem "Duplicate agent"` (ref=e383)
-  - `menuitem "Delete agent"` (ref=e385)
+### SP-02: Post-Login Redirect
+- **URL**: `http://localhost:3000/marketplace`
+- **Title**: `"Marketplace - AutoGPT Platform"`
+- **Confirms**: Post-login redirect goes to `/marketplace` (**FR-02 discrepancy: Library, not Monitor Tab**)
 
-### Snapshot: After "Edit agent" Click from Library
-- **Current tab (0)**: Stays on `http://localhost:3000/library?sort=updatedAt`
-- **New tab (1) OPENED**: `http://localhost:3000/build?flowID=d05c7ed7-66a7-4849-b2b8-bb02d9c8c09d&flowVersion=1`
-- **New tab title**: `EditAgentExploration-Test - Builder - AutoGPT Platform`
-- **Key assertion**: Builder page title contains the agent name (`<AgentName> - Builder - AutoGPT Platform`)
-
-### Snapshot: Builder in Edit Mode
-- **URL**: `/build?flowID=<uuid>&flowVersion=<n>`
-- **Title**: `<AgentName> - Builder - AutoGPT Platform`
-- **Key elements**:
-  - Save button: `data-testid="blocks-control-save-button"` — visible
-  - Save dialog opens when save button clicked
-  - Name input: `data-testid="save-control-name-input"` — pre-filled with existing agent name ✅
-  - Description input: `data-testid="save-control-description-input"` — empty (not set during creation)
-  - Save button: `data-testid="save-control-save-agent-button"`
-
-### Snapshot: After Name Modification and Save
-- **URL before**: `flowVersion=1`
-- **URL after**: `flowVersion=2` ← flowVersion INCREMENTS on save ✅
-- **flowID unchanged**: same UUID
-
-### Snapshot: Monitor Tab (`/monitoring`)
-- **URL**: `http://localhost:3000/monitoring`
+### SP-03: Build Page (Pre-Save)
+- **URL**: `http://localhost:3000/build`
+- **Title**: `"Builder - AutoGPT Platform"`
 - **Elements present**:
-  - Table with columns: "Name", "# of runs", "Last run"
-  - 10 agent rows (same agents as library), all `[cursor=pointer]`
-  - **NO** pencil icon, NO edit button anywhere
-  - NO "Edit agent" element
-- **After clicking agent row**:
-  - `paragraph "Something went wrong"` appeared
-  - `paragraph "An unexpected error occurred. Please try again or contact support if the problem persists."` appeared
-  - `button "Report Error"` appeared
-  - URL stayed at `/monitoring`
+  - Tutorial dialog: `dialog "Welcome to the Tutorial"` [active]
+  - Skip Tutorial button: `button "Skip Tutorial"`
+  - Save button: `button "Icon" [ref=e60]` → **maps to `data-testid="blocks-control-save-button"`** (confirmed by click emit)
 
-### Snapshot: Agent Detail Page (`/library/agents/<id>?activeTab=runs`)
-- **Key elements**:
-  - `button "Edit agent"` — visible (after waitForLoadState networkidle)
-  - `button "Export agent to file"` — visible
-  - `button "Delete agent"` — visible
-  - Breadcrumb: `link "My Library"` / `link "<AgentName>"`
-- **After clicking "Edit agent"**:
-  - NEW TAB opened at `/build?flowID=<uuid>&flowVersion=<currentVersion>`
+### SP-04: Save Dialog (Open)
+- **URL**: Unchanged (`/build`)
+- **Dialog**: `dialog [ref=e132]` (unnamed)
+- **Fields**:
+  - `textbox "Name" [active]` → `data-testid="save-control-name-input"` — **placeholder**: "Enter your agent name"
+  - `textbox "Description"` → `data-testid="save-control-description-input"` — **placeholder**: "Your agent description"
+  - `textbox "Version" [disabled]: "1"` — shows current version number (new field, disabled)
+  - `button "Save Agent"` → `data-testid="save-control-save-agent-button"`
+  - `button "Set schedule"` — schedule the agent (separate feature)
+
+### SP-05: Post-Save URL
+- **URL**: `http://localhost:3000/build?flowID=51708b90-8065-46b4-a42d-60e10c7b2fec&flowVersion=1`
+- **Confirms**: Agent saved with `flowID` and `flowVersion=1`
+
+### SP-06: Library Page (After Agent Load)
+- **URL**: `http://localhost:3000/library?sort=updatedAt`
+- **Title**: `"AutoGPT Platform"` (temporarily during load), then `"Library – AutoGPT Platform"`
+- **Count badge**: Shows "0" initially, loads to "16" asynchronously (**TIMING NOTE**)
+- **Agent card structure**:
+  ```
+  generic [data-testid="library-agent-card"]:
+    link "Built by you" (or "marketplace")  
+    button "Add to favorites"
+    button "More actions"  ← UNSTABLE ID (Radix); use role-based selector
+    generic:
+      link "<agent-name>" → heading [level=5]
+      link "See runs" [data-testid="library-agent-card-see-runs-link"]
+      link "Open in builder" [data-testid="library-agent-card-open-in-builder-link"]
+  ```
+
+### SP-07: More Actions Dropdown
+- **URL**: Unchanged
+- **Menu**: `menu "More actions" [active]`
+- **Items**:
+  - `menuitem "Edit agent"` ← maps to `getRole("menuitem", "Edit agent")`
+  - `menuitem "Duplicate agent"` ← maps to `getRole("menuitem", "Duplicate agent")`
+  - `menuitem "Delete agent"` ← maps to `getRole("menuitem", "Delete agent")`
+- **No other items present** — exactly 3
+
+### SP-08: Edit Agent New Tab (from Library More Actions)
+- **Library tab (0)**: URL stays at `/library?sort=updatedAt`
+- **Builder tab (1)**: URL = `/build?flowID=51708b90-8065-46b4-a42d-60e10c7b2fec&flowVersion=1`
+- **Builder tab title** (immediately after tab-select): `"EA-Explore-Agent-001 - Builder - AutoGPT Platform"`
+- **Title format**: `"<agent-name> - Builder - AutoGPT Platform"`
+
+### SP-09: Open In Builder New Tab (**BEHAVIORAL CHANGE**)
+- **Expected (from infra analysis)**: Same-tab navigation
+- **Actual (empirical)**: Opens a **NEW TAB** at `/build?flowID=<uuid>` (no flowVersion)
+- **Generated code**: `await page.getByTestId('library-agent-card-open-in-builder-link').first().click();`
+- **Tab list**: Tab 0 = library (current), Tab 1 = builder
+- **⚠️ IMPACT**: Tests must use `context.waitForEvent('page')` for this action
+
+### SP-10: Agent Detail Page
+- **URL**: `http://localhost:3000/library/agents/9ad39dbb-2dc3-4aa7-8e97-96d3bffbb5ee?activeTab=runs`
+- **Title**: `"EA-Explore-Agent-001 - Library - AutoGPT Platform"` — agent name IS in title
+- **Elements**:
+  - `heading "EA-Explore-Agent-001" [level=4]` — agent name heading
+  - `paragraph "Exploration agent for edit feature testing"` — description shown
+  - `button "Edit agent"` (contains inner `link "Edit agent"`) → opens NEW TAB
+  - `button "Export agent to file"` — additional action
+  - `button "Delete agent"` — additional action
+
+### SP-11: Builder Pre-Fill Verification (Save Dialog)
+- **Name input value** (via eval): `"EA-Explore-Agent-001"` ← **PRE-FILLED from persisted data** ✅
+- **Description input value** (via eval): `"Exploration agent for edit feature testing"` ← **PRE-FILLED** ✅
+- **Version field**: `"1"` (disabled, shows current version)
+
+### SP-12: After Save with Modification
+- **Before save URL**: `/build?flowID=51708b90...&flowVersion=1`
+- **After save URL**: `/build?flowID=51708b90...&flowVersion=2`
+- **flowVersion incremented**: 1 → 2 ✅
+
+### SP-13: Library After Save (Persistence)
+- Agent `"EA-Explore-Agent-001-Modified"` appears at top of library (sorted by updatedAt)
+- Original name `"EA-Explore-Agent-001"` no longer in listing ✅
+
+### SP-14: Monitor Tab Behavior
+- **URL**: `http://localhost:3000/monitoring`
+- **State**: Shows agents in a table (`heading "Agents" [level=3]`)
+- **Row structure**: `row "<agent-name> <number>"` with `cell "<agent-name>"`
+- **After click**: Row click generated `getByTestId('<agent-uuid>').click()` and caused ERROR PAGE:
+  - `paragraph "Something went wrong"`
+  - `paragraph "We had the following error when retrieving application:"`
+  - `paragraph "An unexpected error occurred. Please try again or contact support..."`
+  - Buttons: "Try Again", "Report Error", "Get Help"
+- **Status**: Monitor Tab agent click = **STILL BROKEN** (FR-01 path is not feasible)
 
 ---
 
-## Timing Observations (MANDATORY for waitFor decisions)
+## 3. Timing Observations
 
-| Action | Observation | Required waitFor |
-|--------|-------------|-----------------|
-| Navigate to `/library` | Sort param appended immediately | None for URL |
-| Library agent cards | Cards NOT visible immediately on first snapshot (showed "0" count) | `waitForLoadState('networkidle')` |
-| Builder page after "Edit agent" click | Title and URL available immediately in new tab | `waitForLoadState('domcontentloaded')` |
-| Save dialog after clicking save button | Appears within ~800ms | `waitFor({ state: 'visible', timeout: 5000 })` on name-input |
-| URL after save | Changes within ~2 seconds | `waitForURL(/flowVersion=/, { timeout: 10000 })` |
-| Agent detail page | Buttons (Edit agent etc.) NOT immediately visible | `waitForLoadState('networkidle')` |
-| Library reload after edit | Agent name updated | `waitForLoadState('networkidle')` after `reload()` |
-
----
-
-## Console Errors During Exploration
-Two repeated non-blocking errors (infrastructure-level, not feature-related):
-- `/_vercel/insights/script.js` — 404 Not Found (Vercel analytics not available locally)
-- `/_vercel/speed-insights/script.js` — 404 Not Found (same)
-
-These errors can be ignored in test assertions.
+| Observation | Required Wait |
+|-------------|---------------|
+| Post-login page may not immediately show marketplace | `hasUrl(page, /\/(marketplace|library|onboarding.*)?/)` |
+| Library loads agents asynchronously (count "0" → "N") | `libraryPage.isLoaded()` — uses `waitForSelector` internally |
+| Builder title shows "Builder - AutoGPT Platform" then updates to agent name | `expect(builderPage).toHaveTitle(new RegExp(agentName), { timeout: 15_000 })` |
+| Save button may not be interactive immediately after navigation | `getId('blocks-control-save-button').waitFor({ state: 'visible', timeout: 15_000 })` |
+| Save dialog inputs need to render before reading values | `getId('save-control-name-input').waitFor({ state: 'visible', timeout: 10_000 })` |
+| flowVersion update in URL after save | `builderPage.waitForURL(/flowVersion=\d+/, { timeout: 15_000 })` |
+| Second snapshot on library sometimes needed for agents to appear | Use `isLoaded()` which includes `waitForLoadState('networkidle')` |
 
 ---
 
-## Verified Element Selectors (Empirically Confirmed)
-
-| Element | Selector | Method |
-|---------|----------|--------|
-| Library agent card | `data-testid="library-agent-card"` | `getId("library-agent-card")` |
-| Agent card name | `data-testid="library-agent-card-name"` | `getId("library-agent-card-name")` |
-| Agent count badge | `data-testid="agents-count"` | `getId("agents-count")` |
-| More actions button | `role="button" name="More actions"` within card | use `card.getByRole('button', { name: 'More actions' })` |
-| Edit agent menuitem | `role="menuitem" name="Edit agent"` | `getRole("menuitem", "Edit agent")` |
-| Duplicate agent menuitem | `role="menuitem" name="Duplicate agent"` | `getRole("menuitem", "Duplicate agent")` |
-| Delete agent menuitem | `role="menuitem" name="Delete agent"` | `getRole("menuitem", "Delete agent")` |
-| Open in builder link | `data-testid="library-agent-card-open-in-builder-link"` | `getId("library-agent-card-open-in-builder-link")` |
-| See runs link | `data-testid="library-agent-card-see-runs-link"` | `getId("library-agent-card-see-runs-link")` |
-| Builder save button | `data-testid="blocks-control-save-button"` | `getId("blocks-control-save-button")` |
-| Save dialog name input | `data-testid="save-control-name-input"` | `getId("save-control-name-input")` |
-| Save dialog desc input | `data-testid="save-control-description-input"` | `getId("save-control-description-input")` |
-| Save dialog save button | `data-testid="save-control-save-agent-button"` | `getId("save-control-save-agent-button")` |
-| Tutorial skip button | `role="button" name="Skip Tutorial"` | `getButton("Skip Tutorial")` |
-| Detail page edit button | `role="button" name="Edit agent"` | `getButton("Edit agent")` |
-| Monitor error text | `paragraph "Something went wrong"` | `getText("Something went wrong")` |
+## 4. Console Errors (Non-Blocking)
+Present throughout: 
+- `404 Not Found: /_vercel/speed-insights/script.js` — dev environment, non-blocking
+- `404 Not Found: /_vercel/insights/script.js` — dev environment, non-blocking
+- `[INFO] [BackendAPI] WebSocket connected to ws://localhost:8001/ws` — normal backend connection
 
 ---
 
-## New Tab Handling Pattern (CRITICAL — All Edit Paths)
+## 5. Key Divergences from Requirements Documentation
 
-**CONFIRMED**: ALL three edit paths open NEW TABS:
-
-| Entry Point | URL Pattern | New Tab? |
-|-------------|-------------|---------|
-| Library "More actions" → "Edit agent" | `/build?flowID=<uuid>&flowVersion=<n>` | ✅ YES |
-| Agent detail page "Edit agent" button | `/build?flowID=<uuid>&flowVersion=<n>` | ✅ YES |
-| Library card "Open in builder" link | `/build?flowID=<uuid>` (no flowVersion) | ✅ YES |
-
-**Required code pattern for new-tab-opening actions**:
-```typescript
-const newPagePromise = context.waitForEvent("page");
-await libraryPage.clickEditAgentMenuItem(); // or clickOpenInBuilderLink()
-const builderPage = await newPagePromise;
-await builderPage.waitForLoadState("domcontentloaded");
-```
+| Documented Behavior | Actual Behavior | Impact on Tests |
+|---------------------|-----------------|-----------------|
+| FR-01: Monitor Tab is the entry point for editing agents | Library page (`/library`) is the actual edit entry point. Monitor Tab shows agents but clicking causes error page. | Tests use Library page, not Monitor Tab |
+| FR-04: "Pencil icon" next to selected agent | "More actions" dropdown with "Edit agent" menuitem is the equivalent | Tests use More Actions → Edit agent |
+| "Open in builder" navigates same tab | "Open in builder" NOW opens NEW TAB (behavioral change from Feb 22 infra analysis) | Tests must use `context.waitForEvent('page')` |
+| Agent count immediately visible | Agent count loads asynchronously from "0" to actual count | `isLoaded()` must be called and waited for |
+| Builder title = agent name | Builder title = `"<agent-name> - Builder - AutoGPT Platform"` | Use `toHaveTitle(new RegExp(agentName))` |
 
 ---
 
-## Feasibility Analysis Update (Post-Exploration)
+## 6. Test Scenarios Derived From Evidence (Phase 4b Input)
 
-| Scenario | Pre-Exploration | Post-Exploration | Reason |
-|----------|----------------|-----------------|--------|
-| TC-001: Edit via More actions → new tab | Executable | ✅ EXECUTABLE | Fully verified |
-| TC-002: Builder pre-fills agent name | Executable | ✅ EXECUTABLE | Confirmed pre-fill |
-| TC-003: Modify name, save, verify persistence | Risky | ✅ EXECUTABLE | Confirmed flowVersion increment + library update |
-| TC-004: More actions dropdown has Edit/Duplicate/Delete | Executable | ✅ EXECUTABLE | Confirmed all 3 items |
-| TC-005: Edit from detail page → new tab | Executable | ✅ EXECUTABLE | Confirmed new tab behavior |
-| TC-006: Monitor Tab agent click → error | N/A previously | ✅ EXECUTABLE (documents broken behavior) | Confirmed error page |
-| TC-007 (FR-01): Edit via Monitor Tab | Risky | ❌ BLOCKED | Monitor Tab click = error page |
-| TC-008: Marketplace agent edit | Risky | ⚠️ RISKY | Requires marketplace agent in library — cannot guarantee |
+| TC | Scenario | Entry Point | Expected Behavior |
+|----|----------|-------------|-------------------|
+| TC-EA-001 | More Actions menu has exactly 3 items | Library card | Edit agent, Duplicate agent, Delete agent visible |
+| TC-EA-002 | Edit agent from Library More Actions | Library More Actions → Edit agent | New tab at `/build?flowID=...&flowVersion=N`, title has agent name |
+| TC-EA-003 | Save dialog pre-fills existing name+desc | Library More Actions → Edit agent → Save button | Name input = existing name, desc input = existing desc |
+| TC-EA-004 | Save modification persists in library | Library More Actions → Edit agent → modify → save | flowVersion increments, new name visible in library |
+| TC-EA-005 | Open in builder opens new tab (new behavior) | Library card Open in builder link | New tab at `/build?flowID=...` (no flowVersion) |
+| TC-EA-006 | Edit from agent detail page | Detail page "Edit agent" button | New tab at `/build?flowID=...&flowVersion=N`, title has agent name |
+| TC-EA-007 | Monitor Tab documents broken FR-01 path | `/monitoring` → click agent row | Error page: "Something went wrong" |
+| TC-EA-008 | Empty library — no edit workflow | Library with 0 agents | No agent cards, no "More actions" buttons (skip if user has agents) |

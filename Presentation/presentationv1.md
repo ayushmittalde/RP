@@ -258,13 +258,17 @@ flowchart LR
     subgraph PART2[Agentic Pipeline - Part 2]
         direction LR
         A2[(representation.md)]
+		E2[(Previous interaction.md)]
+		E3[Test infra and existing test cases knowledge.md]
         P3[Phase 3: Test Case Generation via Agents]
         SUT{{System Under Test}}
         A3[(1. Test suites <br/>2. Coverage report with Traceability matrix)]
         P4[Phase 4: Test Execution, Coverage Analysis & Reporting]
         A4[(report.md)]
 
-        A2 --> P3
+        E2 --> P3
+		E3 --> P3
+		A2 --> P3
         P3 -->|actions| SUT
         SUT -->|feedback| P3
         P3 --> A3 --> P4 --> A4
@@ -276,16 +280,18 @@ flowchart LR
     classDef grouping fill:#F4FAFF,stroke:#7DC6EA,color:#0F2A44,stroke-width:1.5px;
 
     class P3,P4 phase;
-    class A2,A3,A4 artifact;
+    class A2,A3,A4,E2,E3 artifact;
     class SUT system;
     class PART2 grouping;
 
-    linkStyle 0 stroke:#00519E,stroke-width:2.5px;
-    linkStyle 1 stroke:#7DC6EA,stroke-width:2px;
-    linkStyle 2 stroke:#7DC6EA,stroke-width:2px,stroke-dasharray:5 4;
-    linkStyle 3 stroke:#00BEFF,stroke-width:2px;
-    linkStyle 4 stroke:#00519E,stroke-width:2.5px;
+	linkStyle 0 stroke:#7DC6EA,stroke-width:2px,stroke-dasharray:5 4;
+	linkStyle 1 stroke:#7DC6EA,stroke-width:2px,stroke-dasharray:5 4;
+    linkStyle 2 stroke:#00519E,stroke-width:2.5px;
+    linkStyle 3 stroke:#7DC6EA,stroke-width:2px;
+    linkStyle 4 stroke:#7DC6EA,stroke-width:2px,stroke-dasharray:5 4;
     linkStyle 5 stroke:#00BEFF,stroke-width:2px;
+    linkStyle 6 stroke:#00519E,stroke-width:2.5px;
+    linkStyle 7 stroke:#00BEFF,stroke-width:2px;
 ```
 
 
@@ -387,12 +393,21 @@ flowchart LR
 **Slide 15 – Quantitative Outcomes**  
 **Title:** Test Generation Outcomes and Coverage  
 **Bullets:**
-- Number of scenarios modeled and tests generated (happy, negative, boundary)
-- Coverage metrics (functional areas, flows, or branches where available)
-- Execution statistics: passes, failures, blocked tests
-- Findings
-**Suggested visual:** Bar chart or table summarizing number of generated tests and their outcomes; coverage per feature.  
-**Speaker notes:** Present concrete numbers from your academic report (counts, percentages). Emphasize not just volume of tests, but how many are executable and stable.
+
+
+| Metric | agent-blocks.md | create-basic-agent.md | delete-agent.md |
+|--------|:-:|:-:|:-:|
+| Total Requirements (FR + NFR + BR + EC) | 26 | 41 | 18 |
+| Passing Test Cases Generated  | 7 | 10 | 10 |
+| Requirements Fully Covered | 9 (34%) | 29 (70.7%) | 13 (72.2%) |
+| Requirements Partially Covered | 0 | 0 | 2 |
+| Blocked Tests (with empirical evidence) | 15 | 12 | 2 |
+| Not Executed (documented gaps) | 2 | 0 | 1 |
+| Doc–Implementation Mismatches Found | 0 | 5 | 4 |
+| True Bugs / Broken Behaviors Discovered | 0 | 2 | 0 |
+| Execution Time | 3min + 3min + 25min | 2min + 7min + 45min | 2min + 3min + 30min |
+| Tokens Consumed | 54k + 35.8k + 92.16k | 40.5k + 70.6k + 102k | 16.5k + 29.2k + 91.6k |
+
 
 **Slide 16 – Comparison Between different Models**  
 **Title:** Comparison Between different Models  

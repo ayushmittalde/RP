@@ -275,25 +275,10 @@ Generate tests at `./AutoGPT/tests/feature_<appropriate_name>/` using the follow
 
 ---
 
-# TRACEABILITY (REQUIRED)
-
-Generate:
-- coverage-report.md at ./AutoGPT/tests/feature_<appropriate_name>/
-Include:
-| Requirement | Test ID | State Strategy | Status |
-
-Explicitly list:
-- blocked tests
-- risks
-- undefined behavior
-- assumptions made explicit
-
-No requirement may exist without a mapped test OR documented reason.
-
 # Phase 5 — Execution Gate (MANDATORY)
 ### Step 1 — Run the suite
 ```bash
-npx playwright test <spec-file-path> --reporter=list --project=chromium
+npx playwright test <spec-file-path> --reporter=list --project=chromium --workers=1
 ```
 Capture the full output and exit code.
 
@@ -303,7 +288,7 @@ For each failing test:
 2. Identify the exact step that diverges from expectation (wrong selector, missing wait, wrong URL pattern).
 3. Update the Phase 5a evidence file with the new observation.
 4. Fix the test using only the updated evidence.
-5. Re-run only that test to confirm: `npx playwright test --grep "<TC-ID>" --reporter=list --project=chromium`
+5. Re-run only that test to confirm: `npx playwright test --grep "<TC-ID>" --reporter=list --project=chromium --workers=1`
 6. Repeat until it passes or is provably blocked by system behavior.
 
 ### Step 3 — Final gate
@@ -338,6 +323,22 @@ You are encouraged to:
 
 Violation of these rules is a critical failure.
 
+
+# TRACEABILITY (REQUIRED)
+
+Generate:
+- coverage-report.md at ./AutoGPT/tests/feature_<appropriate_name>/
+Include:
+| Requirement | Test ID | State Strategy | Status |
+
+Explicitly list:
+- blocked tests
+- risks
+- undefined behavior
+- assumptions made explicit
+
+No requirement may exist without a mapped test OR documented reason.
+
 # FINAL DELIVERABLES
 
 Produce:
@@ -346,7 +347,7 @@ Produce:
 -- Structured by feature.
 -- Infrastructure aligned.
 -- Executable.
--- All tests pass when running `npx playwright test <spec-file> --reporter=list --project=chromium`, OR each non-passing test is explicitly marked BLOCKED with empirical evidence.
+-- All tests pass when running `npx playwright test <spec-file> --reporter=list --project=chromium --workers=1`, OR each non-passing test is explicitly marked BLOCKED with empirical evidence.
 -- Zero tests rely on selectors not verified in Phase 5a or the Phase 0 mapping table.
 -- Zero assertions inferred from requirements documentation without snapshot evidence.
 

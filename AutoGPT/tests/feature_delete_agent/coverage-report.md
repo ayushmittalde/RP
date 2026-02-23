@@ -1,83 +1,86 @@
 # Coverage Report — Delete Agent Feature
 
-**Generated:** 2026-02-18  
+**Generated:** 2026-02-22  
 **Suite:** `AutoGPT/tests/feature_delete_agent/delete-agent.spec.ts`  
-**Page Object:** `AutoGPT/tests/pages/library.page.ts` (extended)  
-**Source Representation:** `representation/test_6.md`
+**Page Object:** `AutoGPT/tests/pages/library.page.ts` (existing — all delete methods verified empirically)  
+**Source Representation:** `representation/delete-agent-representation.md`  
+**Exploration Evidence:** `Resources/references/exploration-evidence-delete-agent.md`
 
 ---
 
-## ⚠️ Critical Finding: Feature Location Mismatch
+## ⚠️ Critical Discrepancies: Representation vs. Actual Implementation
 
-> The representation document (`test_6.md`) states the delete feature lives in the **Monitor Tab**.  
-> **Empirical live browser exploration (2026-02-18) proves the feature is on the Library page (`/library`).**
+> **1. Feature Location:**  
+> The representation describes the delete feature in the **Monitor Tab** (FR-1, FR-2, FR-3, FR-4).  
+> **Empirical exploration (2026-02-22) confirms the feature is on the Library page (`/library`).**  
+> Clicking agents in the Monitor Tab (`/monitoring`) causes an "Something went wrong" ERROR PAGE.
 >
-> Additionally, the representation states the confirm button is **"Yes, delete"**.  
-> The actual button label is **"Delete Agent"** (capital A).  
+> **2. Delete Affordance:**  
+> The representation states a **trash icon on the right** (FR-4) triggers the flow.  
+> **Actual implementation uses a "More actions" dropdown button** on each agent card.  
+> Clicking "More actions" → menuitem "Delete agent" → confirmation dialog.
 >
-> All test cases in this suite target the empirically verified UI. The representation document should be updated to reflect the actual implementation.
+> **3. Confirm Button Label:**  
+> The representation states the confirm button is **"Yes, delete"** (FR-7).  
+> **Actual confirm button label is "Delete Agent"** (capital A, no comma).
+>
+> **4. Dialog Message:**  
+> The representation states the message is **"Are you sure you want to delete this agent?"** (FR-6).  
+> **Actual message is "Are you sure you want to delete this agent? This action cannot be undone."**  
+> The full message is more comprehensive than the representation documents.
+>
+> All tests target the empirically verified implementation.
 
 ---
 
-## Traceability Table
+## Requirement Traceability Table
 
 | Requirement | Description | Test ID(s) | State Strategy | Coverage Status |
 |-------------|-------------|-----------|----------------|----------------|
-| FR-1 | Navigate to feature entry point (Library page — empirically verified) | TC-009, TC-001..TC-008,TC-010 | Auth in beforeEach + goto("/library") | ✅ Covered |
-| FR-2 | View list of agents | TC-009, TC-001, TC-002, TC-006 | goto("/library") → assert search + count badge | ✅ Covered |
-| FR-3 | Select an agent from the list | TC-001..TC-005, TC-007, TC-010 | createTestAgent() → openAgentActions(name) | ✅ Covered |
-| FR-4 | Locate and activate delete affordance | TC-001..TC-005, TC-007, TC-010 | openAgentActions() → clickDeleteAgentMenuItem() | ✅ Covered |
-| FR-5 | Confirmation dialog appears with correct message | TC-001, TC-002, TC-003, TC-004, TC-010 | Assert dialog role/name + exact text | ✅ Covered |
-| FR-6 | Confirm deletion via "Delete Agent" button | TC-001, TC-006, TC-007, TC-008 | confirmDeleteAgent() | ✅ Covered |
-| FR-7 | Agent removed from list immediately after confirmation | TC-001, TC-006, TC-007, TC-008 | Assert library-agent-card count = 0 | ✅ Covered |
-| FR-8 | Delete affordance visible on agent card (right-side position) | TC-005 | Assert More actions button visible on card | ⚠️ Partial — visibility covered; positional (right-side) not asserted |
-| NFR-1 | Deletion is irreversible | TC-001, TC-007 | Agent gone from DOM after confirmation | ⚠️ Partial — DOM removal only; no API-level permanence check |
-| NFR-2 | User warned before deletion with confirmation dialog | TC-001, TC-004 | Assert dialog with exact warning text | ✅ Covered |
-| NFR-3 | Deletion反映 in UI immediately without page refresh | TC-007, TC-008 | Assert count/card within 5s on same URL | ✅ Covered |
-| NFR-4 | Clear visual affordance for delete | TC-005 | Assert "More actions" button visible | ⚠️ Partial — visibility only; no ARIA/accessibility assertion |
-| BR-1 | Deleted agents cannot be recovered | TC-001 (UI) | DOM absence after delete | ⚠️ Partial — no backend/API recovery check |
-| BR-2 | Confirmation dialog is mandatory before deletion | TC-004, TC-010 | Assert agent count unchanged while dialog shown | ✅ Covered |
-| EC-1 | User cancels deletion — agent preserved | TC-002 (Cancel), TC-003 (X button) | cancelDeleteAgent() / closeDeleteDialogWithX() | ✅ Covered |
-| EC-2 | Only one agent exists — deleted → empty state | TC-008 (partial) | Count decrement checked; empty-state UI not verified | ⚠️ Partial — last-agent pre-condition not enforced |
-| EC-3 | Delete a currently active/running agent | — | N/A | 🚫 **BLOCKED** — see blocked section |
-| EC-4 | Concurrent multi-user deletion | — | N/A | 🚫 **BLOCKED** — see blocked section |
-| EC-5 | Network failure during deletion | — | N/A | ❌ Not covered — S8 defined, not yet automated |
-| EC-6 | No agents in library (empty state) | — | N/A | ❌ Not covered — S3 defined, not yet automated |
-| EC-7 | User lacks delete permissions | — | N/A | 🚫 **BLOCKED** — see blocked section |
-
----
-
-## Scenario Coverage Table
-
-| Scenario | Description | Test ID | Coverage Status |
-|----------|-------------|---------|----------------|
-| S1 | Successfully delete agent with confirmation | TC-001 | ✅ Covered |
-| S2 | Cancel agent deletion | TC-002 (Cancel), TC-003 (X) | ✅ Covered |
-| S3 | View library with no agents | — | ❌ Not Implemented |
-| S4 | Delete the last remaining agent → empty state | TC-008 (partial) | ⚠️ Partial |
-| S5 | Delete one of multiple agents; others remain | TC-006 | ✅ Covered |
-| S6 | Verify visual affordance / "More actions" position | TC-005 | ⚠️ Partial |
-| S7 | Confirmation dialog content and safety controls | TC-004, TC-010 | ✅ Covered |
-| S8 | Handle deletion failure (network error) | — | ❌ Not Implemented |
-| S9 | Verify deleted agent cannot be recovered | — | ❌ Not Implemented |
-| S10 | Verify immediate on-page removal | TC-007 | ✅ Covered |
+| FR-1 | Feature entry point (Library page — empirically verified) | TC-DA-009, + all others | Auth in beforeEach + `goto("/library")` | ✅ Covered |
+| FR-2 | List all agents visible | TC-DA-009, TC-DA-001, TC-DA-006 | `libraryPage.isLoaded()` + agent count badge | ✅ Covered |
+| FR-3 | Select an agent (click to select) | TC-DA-001..010 except TC-DA-009 | `libraryPage.openAgentActions(name)` | ✅ Covered |
+| FR-4 | Delete affordance visible on selected agent | TC-DA-005 | Assert "More actions" button + "Delete agent" menuitem visible | ✅ Covered |
+| FR-5 | Clicking delete affordance triggers dialog | TC-DA-001, TC-DA-002, TC-DA-003, TC-DA-004, TC-DA-010 | `libraryPage.clickDeleteAgentMenuItem()` + `dialog.waitFor` | ✅ Covered |
+| FR-6 | Dialog message content | TC-DA-001, TC-DA-004 | `expect(dialog).toContainText(...)` with exact string | ✅ Covered |
+| FR-7 | Confirm deletion action ("Delete Agent" — actual label) | TC-DA-001, TC-DA-006, TC-DA-007, TC-DA-008 | `libraryPage.confirmDeleteAgent()` | ✅ Covered |
+| FR-8 | Agent removed from list upon confirmation | TC-DA-001, TC-DA-006, TC-DA-007, TC-DA-008 | `expect(getId("library-agent-card").filter(...)).toHaveCount(0)` | ✅ Covered |
+| NFR-1 | Immediate removal upon confirmation | TC-DA-007, TC-DA-008 | `toHaveCount(0, { timeout: 5_000 })` + URL assertion (no redirect) | ✅ Covered |
+| NFR-2 | Deletion irreversible — no undo mechanism | TC-DA-001, TC-DA-007 | DOM absence after deletion; no undo UI element asserted | ⚠️ Partial — UI undo absence verified; no API-level permanence check |
+| BR-1 | Agent must exist and be visible before deletion | TC-DA-001, TC-DA-009 | `expect(await libraryPage.agentExists(name)).toBe(true)` | ✅ Covered |
+| BR-2 | Explicit confirmation required | TC-DA-004, TC-DA-010 | Assert agent still exists while dialog open; delete only triggers after button click | ✅ Covered |
+| BR-3 | Once confirmed, deletion permanent | TC-DA-001, TC-DA-007 | Agent absent from DOM post-deletion; no recovery UI | ⚠️ Partial — DOM level only; no backend verification |
+| BR-4 | Cancel option implicitly available | TC-DA-002, TC-DA-003, TC-DA-004 | Cancel button + Close button asserted visible; agent preserved after cancel | ✅ Covered |
+| EC-1 | User cancels dialog — agent preserved | TC-DA-002 (Cancel btn), TC-DA-003 (X btn) | `cancelDeleteAgent()` / `closeDeleteDialogWithX()` + agent count unchanged | ✅ Covered |
+| EC-2 | Agent list empty — trash icon inaccessible | — | Cannot guarantee zero agents without API cleanup; user pool has pre-existing agents | 🚫 BLOCKED |
+| EC-3 | Rapid double-click on trash icon | — | Race condition with no defined expected behavior (EF-02 in representation) | 🚫 BLOCKED |
+| EC-4 | Network failure during deletion | — | Out of scope per representation (EF-03); system behavior explicitly undefined | ❌ Out of Scope |
 
 ---
 
 ## Test Inventory
 
-| Test ID | Test Name | Type | Requirements |
-|---------|-----------|------|--------------|
-| TC-001 | successfully delete an agent — agent removed from library | Happy Path | FR-1..FR-7, NFR-1..NFR-3, BR-1, BR-2 |
-| TC-002 | cancel deletion via Cancel button — agent remains in library | Negative Path | FR-3, FR-4, FR-5, EC-1 |
-| TC-003 | dismiss deletion dialog with X button — agent remains | Negative Path | FR-5, EC-1 |
-| TC-004 | delete confirmation dialog shows correct content and safety controls | UI Validation | FR-5, NFR-2, BR-2 |
-| TC-005 | More actions button is visible on agent card and contains delete option | UI Validation | FR-4, FR-8, NFR-4 |
-| TC-006 | delete one agent when multiple exist — others remain unchanged | Happy Path | FR-1..FR-3, FR-6, FR-7, NFR-3 |
-| TC-007 | agent is removed from UI immediately without page refresh | Performance | FR-7, NFR-3 |
-| TC-008 | agents-count badge updates immediately after deletion | Boundary | FR-7, NFR-3 |
-| TC-009 | user can navigate to Library page and see agent list | Navigation/Smoke | FR-1, FR-2 |
-| TC-010 | agent is NOT deleted when dialog is shown but not confirmed | Safety Validation | FR-5, NFR-2, BR-2 |
+| Test ID | Test Name | Type | Requirements Covered |
+|---------|-----------|------|---------------------|
+| TC-DA-001 | successfully delete an agent — agent removed from library | Happy Path | FR-1..FR-8, NFR-1, NFR-2, BR-1, BR-2, BR-3 |
+| TC-DA-002 | cancel deletion via Cancel button — agent remains in library | Alternative Flow | FR-5, FR-6, FR-7, BR-4, EC-1 |
+| TC-DA-003 | dismiss deletion dialog with X button — agent remains | Alternative Flow | FR-5, BR-4, EC-1 |
+| TC-DA-004 | delete confirmation dialog shows correct content and all safety controls | UI Validation | FR-5, FR-6, FR-7, NFR-2, BR-2, BR-4 |
+| TC-DA-005 | More actions button visible on agent card and contains Delete agent option | UI Validation | FR-3, FR-4, FR-5 |
+| TC-DA-006 | delete one of multiple agents — only the targeted agent is removed | Happy Path | FR-2, FR-3, FR-8, NFR-1, BR-3 |
+| TC-DA-007 | agent removed from UI immediately after confirmation — no page refresh | Immediate Removal | FR-8, NFR-1 |
+| TC-DA-008 | agents-count badge decrements immediately after deletion | State Verification | FR-8, NFR-1 |
+| TC-DA-009 | user navigates to Library page and sees the agent list interface | Navigation / Smoke | FR-1, FR-2, BR-1 |
+| TC-DA-010 | agent is NOT deleted when dialog is shown but not confirmed | Safety Validation | FR-5, FR-6, FR-7, NFR-2, BR-2 |
+
+---
+
+## Blocked Scenarios
+
+| Scenario | Requirements | Block Reason | Automatable When? |
+|----------|-------------|-------------|------------------|
+| EC-2: Empty library | FR-4 guard | Cannot guarantee 0 agents state without API bulk-delete or isolated user with no history. User pool always has existing agents from prior test runs. | When an API endpoint for bulk agent deletion or per-test user provisioning is available |
+| EC-3: Rapid double-click | FR-5 | No defined expected behavior per representation (marked as "system should present only one dialog" but not specified). No test can be written without an acceptance criterion. | When product specifies expected behavior for duplicate dialog trigger |
 
 ---
 
@@ -85,61 +88,31 @@
 
 | Strategy | Tests Using It | Description |
 |----------|---------------|-------------|
-| **API-backed agent creation** | TC-001..TC-010 (except TC-009) | `createTestAgent()` calls `BuildPage.saveAgent()` which persists via the platform backend; waits for `?flowID=` URL to confirm persistence |
-| **Auth isolation** | All | `getTestUser()` from pool + `LoginPage.login()` in `beforeEach`; cookie consent set via `addInitScript` |
-| **Serial execution** | Entire suite | `test.describe.configure({ mode: "serial" })` prevents concurrent state collision for deletion-heavy tests |
-| **Agent-name uniqueness** | All creation tests | `Date.now()` suffix ensures no name collision across parallel CI runs or re-runs |
-| **Empirical selector basis** | All | All selectors in POM methods verified via live browser; no invented/structural CSS selectors in test assertions |
+| **UI agent creation** | TC-DA-001..TC-DA-008, TC-DA-010 | `createTestAgent()` calls `BuildPage.saveAgent()` — waits for `/build?flowID=` URL to confirm backend persistence |
+| **Auth pool isolation** | All | `getTestUser()` from `.auth/user-pool.json` pool + `LoginPage.login()` in `beforeEach`; cookie consent set via `addInitScript` |
+| **Serial execution** | Entire suite | `test.describe.configure({ mode: "serial" })` prevents concurrent agent deletion races and count assertion collisions |
+| **Date.now() name uniqueness** | All creation tests | `Date.now()` suffix ensures no name collision across CI re-runs or parallel worker pools |
+| **Empirical selector basis** | All | All selectors in LibraryPage methods verified via live playwright-cli exploration on 2026-02-18 and 2026-02-22 |
 
 ---
 
-## Blocked Scenarios
+## Risk Register
 
-| Scenario | Requirements | Reason Blocked | Automatable When? |
-|----------|-------------|---------------|------------------|
-| EC-3: Delete active/running agent | FR-6, FR-7 | Marked TBD in representation. No UI state indicator or API contract defined for what "active" means or how deletion should be handled | When product spec defines expected behavior (block, warn, force-stop) |
-| EC-4: Concurrent multi-user deletion | FR-7 | Requires two simultaneous authenticated sessions. Current test infrastructure has no multi-session fixture. Race condition behavior undefined. | When multi-session fixture support is added AND race condition behavior specified |
-| EC-7: Permission-based deletion denial | FR-6 | No RBAC model defined in specification. No low-privilege test user provisioned in pool. | When permission model is specified and a non-owner test user is available |
-
----
-
-## Known Gaps (Automatable — Not Yet Implemented)
-
-| Gap | Scenario | Priority | Implementation Note |
-|-----|----------|----------|-------------------|
-| Empty-state UI after last-agent deletion | S3, EC-6, S4 | MEDIUM | Navigate to library with zero agents OR delete last agent and assert empty-state message |
-| Network-error handling during deletion | S8, EC-5 | MEDIUM | Use `page.route()` to intercept DELETE API call with a 500 response; verify agent stays in list and error UI is shown |
-| Irreversibility via API verification | S9, NFR-1, BR-1 | LOW | Issue `GET /api/agents/{id}` after delete and assert 404 (requires API contract documentation) |
-| Last-agent empty state | S4 | LOW | Ensure only one agent exists before test; delete it; assert empty-state component visible |
+| Risk | Severity | Mitigation |
+|------|----------|-----------|
+| Agent name collision across parallel runs | Medium | `Date.now()` suffix on all agent names |
+| Library `isLoaded()` flakiness under CI load | Medium | `networkidle` + `10s` timeout already implemented in LibraryPage |
+| Radix dialog overlay lingering after cancel | Low | `cancelDeleteAgent()` includes Radix portal cleanup via `waitForFunction` |
+| `agents-count` badge lag after deletion | Low | 5s timeout on `toHaveCount(0)` assertion in TC-DA-007/TC-DA-008 |
+| Pre-existing agents inflating count assertions | Low | Count delta assertions (before - after = 1) rather than absolute value checks |
 
 ---
 
-## Risks
+## Assumptions Made Explicit
 
-| Risk | Severity | Impact | Mitigation |
-|------|----------|--------|------------|
-| **Feature location mismatch in requirements** | HIGH | If tests are run against a future build where delete moves to Monitor Tab, suite fails silently until someone investigates | Re-explore after each major release; add comment in spec noting empirical basis |
-| **Serial mode cascade failure** | MEDIUM | One test failure can cause all downstream tests to fail with misleading errors | Add `afterEach` cleanup fixture; consider `test.afterEach` teardown that deletes any agent matching the TC's naming pattern |
-| **Shared test account state** | MEDIUM | Pre-existing agents in account affect count assertions in TC-008 and TC-006 | Use per-test agent name uniqueness (already done); isolate count changes relative to `countBefore` snapshot |
-| **Orphan agents accumulate over runs** | LOW | TC-002, TC-003, TC-004, TC-005 create agents but don't delete them; repeated runs grow the account | Add `afterEach` cleanup or track created agent names for teardown |
-| **Button label discrepancy** | HIGH | Representation says "Yes, delete"; implementation is "Delete Agent" — if backend changes to match spec without UI update, tests may break | Tests use empirically verified labels; labeled in comments for maintainer awareness |
+1. **Library page is the actual feature location** — representation's Monitor Tab references are documentation errors.  
+2. **"Delete Agent" is the correct confirm button label** — NOT "Yes, delete" as FR-7 states.  
+3. **Pre-existing agents in the user's library** are acceptable — tests use delta assertions for count (not absolute counts).  
+4. **Serial test execution** is required because tests share the same user account and deletion is irreversible.  
+5. **Dialog message includes "This action cannot be undone."** — this is additional information beyond FR-6's documented text.
 
----
-
-## Empirical Verification Log
-
-The following selectors were confirmed against the live application on 2026-02-18:
-
-| Selector | Verified | Notes |
-|----------|----------|-------|
-| `role="button" name="More actions"` | ✅ | On each library-agent-card |
-| `role="menuitem" name="Delete agent"` | ✅ | In dropdown menu |
-| `role="dialog" name="Delete agent"` | ✅ | Confirmation modal |
-| Dialog text: "Are you sure you want to delete this agent? This action cannot be undone." | ✅ | Exact text verified |
-| `role="button" name="Delete Agent"` | ✅ | Capital A — differs from representation ("Yes, delete") |
-| `role="button" name="Cancel"` | ✅ | In dialog |
-| `role="button" name="Close"` | ✅ | X button in dialog |
-| `data-testid="library-agent-card"` | ✅ | Agent cards in library |
-| `data-testid="agents-count"` | ✅ | Count badge |
-| `role="textbox" name="Search agents"` | ✅ | Search input in library (TC-009) |
-| `data-testid="search-bar"` | ❌ REJECTED | Not found in live DOM — replaced with verified role selector |
