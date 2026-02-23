@@ -39,19 +39,6 @@ export class MonitorPage extends BasePage {
   async isLoaded(): Promise<boolean> {
     console.log(`checking if monitor page is loaded`);
     try {
-      // Check for error state first and retry if needed
-      const maxRetries = 3;
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        const errorButton = this.page.getByRole("button", { name: "Try Again" });
-        if (await errorButton.isVisible({ timeout: 1000 }).catch(() => false)) {
-          console.log(`Error state detected on monitor page (attempt ${attempt}/${maxRetries}), clicking Try Again`);
-          await errorButton.click();
-          await this.page.waitForTimeout(2000); // Wait for reload
-          continue;
-        }
-        break; // No error, proceed
-      }
-
       // Wait for the monitor page
       await this.page.getByTestId("monitor-page").waitFor({
         state: "visible",
@@ -221,63 +208,33 @@ export class MonitorPage extends BasePage {
 
   /**
    * Click the trash/delete icon for an agent
-   * FINDING: Clicking agent navigates to broken detail page.
-   * Solution: Look for trash icon directly without clicking agent first.
+   * TODO: Verify selector - assumed based on common patterns
    */
   async clickTrashIcon(agent: Agent): Promise<void> {
     console.log(`clicking trash icon for agent ${agent.id} ${agent.name}`);
     
-    // Strategy 1: Look for any delete/trash button with agent context
-    // Try various selectors that might contain the agent ID or be near the agent row
+    // First select the agent row
+    await this.clickAgent(agent.id);
+    
+    // Try multiple selector strategies
+    // Strategy 1: data-testid
+    const trashByTestId = this.page.getByTestId("delete-agent-button");
+    if (await trashByTestId.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await trashByTestId.click();
+      return;
+    }
+    
+    // Strategy 2: role="button" with name pattern
+    const trashByRole = this.page.getByRole("button", { name: /delete|trash|remove/i });
+    if (await trashByRole.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await trashByRole.click();
+      return;
+    }
+    
+    // Strategy 3: Within agent row, look for trash icon
     const agentRow = this.page.getByTestId(agent.id);
-    
-    // Try to find trash icon using various methods
-    const selectors = [
-      // Within the row, look for button with trash/delete text
-      () => agentRow.getByRole("button", { name: /delete|trash/i }),
-      // Within the row, look for button with specific test ID
-      () => agentRow.getByTestId("delete-agent-button"),
-      // Within the row, look for button containing trash icon (lucide-trash class)
-      () => agentRow.locator("button:has(svg.lucide-trash)"),
-      // Within the row, any button with delete-related test ID
-      () => agentRow.locator("[data-testid*='delete']"),
-      // Look for image/icon alt text
-      () => agentRow.locator("button img[alt*='delete'], button img[alt*='trash']"),
-    ];
-
-    // Try each selector with short timeout
-    for (const getSelector of selectors) {
-      try {
-        const icon = getSelector();
-        if (await icon.isVisible({ timeout: 1000 }).catch(() => false)) {
-          console.log(`Found trash icon using selector strategy`);
-          await icon.click();
-          return;
-        }
-      } catch {
-        // Continue to next strategy
-      }
-    }
-    
-    // Strategy 2: Hover over row to reveal hidden buttons
-    console.log(`Trying hover strategy`);
-    await agentRow.hover();
-    await this.page.waitForTimeout(500);
-    
-    for (const getSelector of selectors) {
-      try {
-        const icon = getSelector();
-        if (await icon.isVisible({ timeout: 1000 }).catch(() => false)) {
-          console.log(`Found trash icon after hover`);
-          await icon.click();
-          return;
-        }
-      } catch {
-        // Continue
-      }
-    }
-
-    throw new Error(`Could not find trash icon for agent ${agent.id}. The delete button may not be implemented in the UI yet.`);
+    const trashIcon = agentRow.getByRole("button", { name: /delete|trash/i });
+    await trashIcon.click();
   }
 
   /**

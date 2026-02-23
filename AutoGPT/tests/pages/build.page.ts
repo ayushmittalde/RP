@@ -27,9 +27,9 @@ export class BuildPage extends BasePage {
     try {
       await this.page
         .getByRole("button", { name: "Skip Tutorial", exact: true })
-        .click({ timeout: 2000 });
+        .click();
     } catch (error) {
-      console.info("Tutorial not visible or already closed");
+      console.info("Error closing tutorial:", error);
     }
   }
 
@@ -535,7 +535,7 @@ export class BuildPage extends BasePage {
     const displayName = this.getDisplayName(dictionaryBlock.name);
     await searchInput.clear();
 
-    await isVisible(this.page.getByRole("button", { name: "Output" }));
+    await isVisible(this.page.getByText("Output"));
 
     await searchInput.fill(displayName);
 

@@ -64,14 +64,8 @@ export class LoginPage {
     await new Promise((resolve) => setTimeout(resolve, 200)); // allow time for client-side redirect
     await this.page.waitForLoadState("load", { timeout: 10_000 });
 
-    // Only navigate to marketplace if not already there
-    const currentPath = new URL(this.page.url()).pathname;
-    if (currentPath !== "/marketplace") {
-      console.log(`➡️ Navigating from ${currentPath} to /marketplace ...`);
-      await this.page.goto("/marketplace", { timeout: 10_000 });
-    } else {
-      console.log("✅ Already at /marketplace");
-    }
+    console.log("➡️ Navigating to /marketplace ...");
+    await this.page.goto("/marketplace", { timeout: 10_000 });
     console.log("✅ Login process complete");
 
     // If Wallet popover auto-opens, close it to avoid blocking account menu interactions
